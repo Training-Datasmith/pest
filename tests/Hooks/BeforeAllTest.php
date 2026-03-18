@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 pest()->beforeAll(function () {
     expect($_SERVER['globalHook']->calls->beforeAll)
         ->toBe(0);

@@ -20,7 +20,8 @@ final class ServiceMessage
     public function __construct(
         private readonly string $type,
         private readonly array $parameters,
-    ) {}
+    ) {
+    }
 
     public function toString(): string
     {

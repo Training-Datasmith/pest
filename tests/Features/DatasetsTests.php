@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Exceptions\DatasetAlreadyExists;
 use Pest\Exceptions\DatasetDoesNotExist;
 use Pest\Plugin;
@@ -46,7 +48,7 @@ test('it truncates the description', function () {
     // it gets tested by the integration test
 })->with([str_repeat('Fooo', 10)]);
 
-$state = new stdClass;
+$state = new stdClass();
 $state->text = '';
 
 $datasets = [[1], [2]];
@@ -130,7 +132,7 @@ class Bar
 }
 
 $namedDatasets = [
-    new Bar,
+    new Bar(),
 ];
 
 test('lazy named datasets', function ($text) {
@@ -143,12 +145,12 @@ it('creates unique test case names', function (string $name, Plugin $plugin, boo
     expect(true)->toBeTrue();
     $counter++;
 })->with([
-    ['Name 1', new Plugin, true],
-    ['Name 1', new Plugin, true],
-    ['Name 1', new Plugin, false],
-    ['Name 2', new Plugin, false],
-    ['Name 2', new Plugin, true],
-    ['Name 1', new Plugin, true],
+    ['Name 1', new Plugin(), true],
+    ['Name 1', new Plugin(), true],
+    ['Name 1', new Plugin(), false],
+    ['Name 2', new Plugin(), false],
+    ['Name 2', new Plugin(), true],
+    ['Name 1', new Plugin(), true],
 ]);
 
 it('creates unique test case names - count', function () use (&$counter) {
@@ -241,7 +243,7 @@ test('more than two datasets did the job right', function () use ($state) {
     expect($state->text)->toBe('121212121212131423241314232411122122111221221112212213142324135136145146235236245246');
 });
 
-$wrapped_generator_state = new stdClass;
+$wrapped_generator_state = new stdClass();
 $wrapped_generator_state->text = '';
 $wrapped_generator_function_datasets = [1, 2, 3, 4];
 

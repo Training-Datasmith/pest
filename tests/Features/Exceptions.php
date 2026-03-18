@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 it('gives access the the underlying expectException', function () {
     $this->expectException(InvalidArgumentException::class);
 
-    throw new InvalidArgumentException;
+    throw new InvalidArgumentException();
 });
 
 it('catch exceptions', function () {

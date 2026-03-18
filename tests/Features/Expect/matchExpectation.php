@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\ExpectationFailedException;
 
 beforeEach(function () {
@@ -8,7 +10,9 @@ beforeEach(function () {
 
 it('pass', function () {
     expect('baz')
-        ->match('foo', [
+        ->match(
+            'foo',
+            [
             'bar' => function ($value) {
                 $this->matched = 'bar';
 
@@ -28,7 +32,9 @@ it('pass', function () {
 
 it('failures', function () {
     expect(true)
-        ->match('foo', [
+        ->match(
+            'foo',
+            [
             'bar' => function ($value) {
                 return $value->toBeTrue();
             },
@@ -41,7 +47,9 @@ it('failures', function () {
 
 it('runs with truthy', function () {
     expect('foo')
-        ->match(1, [
+        ->match(
+            1,
+            [
             'bar' => function ($value) {
                 $this->matched = 'bar';
 
@@ -61,7 +69,9 @@ it('runs with truthy', function () {
 
 it('runs with falsy', function () {
     expect('foo')
-        ->match(false, [
+        ->match(
+            false,
+            [
             'bar' => function ($value) {
                 $this->matched = 'bar';
 
@@ -84,7 +94,8 @@ it('runs with truthy closure condition', function () {
         ->match(
             function () {
                 return '1';
-            }, [
+            },
+            [
                 'bar' => function ($value) {
                     $this->matched = 'bar';
 
@@ -107,7 +118,8 @@ it('runs with falsy closure condition', function () {
         ->match(
             function () {
                 return '0';
-            }, [
+            },
+            [
                 'bar' => function ($value) {
                     $this->matched = 'bar';
 
@@ -127,7 +139,9 @@ it('runs with falsy closure condition', function () {
 
 it('can be passed non-callable values', function () {
     expect('foo')
-        ->match('pest', [
+        ->match(
+            'pest',
+            [
             'bar' => 'foo',
             'pest' => 'baz',
         ]
@@ -143,7 +157,8 @@ it('can be used in higher order tests')
     ->match(
         function () {
             return true;
-        }, [
+        },
+        [
             false => function ($value) {
                 return $value->toBeFalse();
             },

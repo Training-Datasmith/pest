@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 beforeEach(function () {
     $this->description = $this->__description;
     $this->latestDescription = self::$__latestDescription;

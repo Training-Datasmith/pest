@@ -7,4 +7,6 @@ namespace Pest\Matchers;
 /**
  * @internal
  */
-final class Any {}
+final class Any
+{
+}

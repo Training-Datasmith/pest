@@ -42,7 +42,9 @@ final readonly class OppositeExpectation
      *
      * @param  Expectation<TValue>  $original
      */
-    public function __construct(private Expectation $original) {}
+    public function __construct(private Expectation $original)
+    {
+    }
 
     /**
      * Asserts that the value array not has the provided $keys.
@@ -289,7 +291,7 @@ final readonly class OppositeExpectation
             throw new MissingDependency(__FUNCTION__, 'ext-intl >= 2.0');
         }
 
-        $checker = new Spoofchecker;
+        $checker = new Spoofchecker();
 
         /** @var Expectation<array<int, string>|string> $original */
         $original = $this->original;
@@ -321,7 +323,7 @@ final readonly class OppositeExpectation
     {
         $methods = is_array($methods) ? $methods : [$methods];
 
-        $state = new stdClass;
+        $state = new stdClass();
 
         /** @var Expectation<array<int, string>|string> $original */
         $original = $this->original;
@@ -367,7 +369,7 @@ final readonly class OppositeExpectation
     {
         $methods = is_array($methods) ? $methods : [$methods];
 
-        $state = new stdClass;
+        $state = new stdClass();
 
         /** @var Expectation<array<int, string>|string> $original */
         $original = $this->original;
@@ -413,7 +415,7 @@ final readonly class OppositeExpectation
     {
         $methods = is_array($methods) ? $methods : [$methods];
 
-        $state = new stdClass;
+        $state = new stdClass();
 
         /** @var Expectation<array<int, string>|string> $original */
         $original = $this->original;

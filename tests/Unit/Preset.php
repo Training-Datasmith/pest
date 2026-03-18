@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 pest()->presets()->custom('myFramework', function (array $userNamespaces) {
     return [
         expect($userNamespaces)->toBe(['Pest']),

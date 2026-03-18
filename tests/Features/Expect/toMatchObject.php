@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\ExpectationFailedException;
 
 beforeEach(function () {
@@ -18,8 +20,7 @@ test('pass', function () {
 });
 
 test('pass with class', function () {
-    expect(new class
-    {
+    expect(new class () {
         public $name = 'Nuno';
 
         public $email = 'enunomaduro@gmail.com';

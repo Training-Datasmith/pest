@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 pest()->beforeEach(function () {
     expect($this)
         ->toHaveProperty('baz')

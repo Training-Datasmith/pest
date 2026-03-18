@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('class has constructor')
     ->expect('Tests\Fixtures\Arch\ToHaveConstructor\HasConstructor\HasConstructor')
     ->toHaveConstructor();

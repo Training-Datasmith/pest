@@ -1,6 +1,8 @@
 <?php
 
-$foo = new stdClass;
+declare(strict_types=1);
+
+$foo = new stdClass();
 $foo->bar = 0;
 
 beforeAll(function () use ($foo) {

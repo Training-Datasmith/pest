@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * NOTE: To preserve cross-platform testing compatibility we cannot use ! * and
  * other Windows reserved characters in this test's filename.

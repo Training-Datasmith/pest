@@ -9,7 +9,9 @@ final readonly class Description implements \Stringable
     /**
      * Creates a new Description instance.
      */
-    public function __construct(private string $description) {}
+    public function __construct(private string $description)
+    {
+    }
 
     /**
      * Returns the description as a string.

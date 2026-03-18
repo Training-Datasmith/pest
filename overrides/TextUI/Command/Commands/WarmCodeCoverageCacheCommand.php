@@ -91,10 +91,10 @@ final readonly class WarmCodeCoverageCacheCommand implements Command
             );
         }
 
-        $timer = new Timer;
+        $timer = new Timer();
         $timer->start();
 
-        (new CacheWarmer)->warmCache(
+        (new CacheWarmer())->warmCache(
             $this->configuration->coverageCacheDirectory(),
             ! $this->configuration->disableCodeCoverageIgnore(),
             $this->configuration->ignoreDeprecatedCodeUnitsFromCodeCoverage(),

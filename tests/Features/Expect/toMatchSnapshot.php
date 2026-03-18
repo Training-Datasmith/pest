@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\TestSuite;
 use PHPUnit\Framework\ExpectationFailedException;
 
@@ -41,9 +43,10 @@ test('pass using pipes', function () {
 test('pass with `__toString`', function () {
     TestSuite::getInstance()->snapshots->save($this->snapshotable);
 
-    $object = new class($this->snapshotable)
-    {
-        public function __construct(protected string $snapshotable) {}
+    $object = new class ($this->snapshotable) {
+        public function __construct(protected string $snapshotable)
+        {
+        }
 
         public function __toString()
         {
@@ -57,9 +60,10 @@ test('pass with `__toString`', function () {
 test('pass with `toString`', function () {
     TestSuite::getInstance()->snapshots->save($this->snapshotable);
 
-    $object = new class($this->snapshotable)
-    {
-        public function __construct(protected string $snapshotable) {}
+    $object = new class ($this->snapshotable) {
+        public function __construct(protected string $snapshotable)
+        {
+        }
 
         public function toString()
         {
@@ -93,9 +97,10 @@ describe('within describe', function () {
 test('pass with `toArray`', function () {
     TestSuite::getInstance()->snapshots->save(json_encode(['key' => $this->snapshotable], JSON_PRETTY_PRINT));
 
-    $object = new class($this->snapshotable)
-    {
-        public function __construct(protected string $snapshotable) {}
+    $object = new class ($this->snapshotable) {
+        public function __construct(protected string $snapshotable)
+        {
+        }
 
         public function toArray()
         {
@@ -119,9 +124,10 @@ test('pass with array', function () {
 test('pass with `toSnapshot`', function () {
     TestSuite::getInstance()->snapshots->save(json_encode(['key' => $this->snapshotable], JSON_PRETTY_PRINT));
 
-    $object = new class($this->snapshotable)
-    {
-        public function __construct(protected string $snapshotable) {}
+    $object = new class ($this->snapshotable) {
+        public function __construct(protected string $snapshotable)
+        {
+        }
 
         public function toSnapshot()
         {

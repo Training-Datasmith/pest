@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 beforeEach(function () {
     $this->note('This is before each runtime note');
 })->note('This is before each static note');

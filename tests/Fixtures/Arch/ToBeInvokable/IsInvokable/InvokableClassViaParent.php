@@ -6,5 +6,4 @@ namespace Tests\Fixtures\Arch\ToBeInvokable\IsInvokable;
 
 class InvokableClassViaParent extends ParentInvokableClass
 {
-    //
 }

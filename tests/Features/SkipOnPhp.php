@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('can run on php version')
     ->skipOnPhp('<=7.4.0')
     ->assertTrue(true);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\ExceptionTrace;
 
 it('ensures the given closures reports the correct class name', function () {

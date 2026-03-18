@@ -224,7 +224,8 @@ final class Reflection
             array_map(
                 fn (ReflectionProperty $property): ReflectionProperty => $property,
                 $reflectionClass->getProperties(),
-            ), fn (ReflectionProperty $property): bool => $property->getDeclaringClass()->getName() === $reflectionClass->getName(),
+            ),
+            fn (ReflectionProperty $property): bool => $property->getDeclaringClass()->getName() === $reflectionClass->getName(),
         );
 
         $propertiesFromTraits = [];
@@ -259,7 +260,8 @@ final class Reflection
             array_map(
                 fn (ReflectionMethod $method): ReflectionMethod => $method,
                 $reflectionClass->getMethods($filter),
-            ), fn (ReflectionMethod $method): bool => $method->getDeclaringClass()->getName() === $reflectionClass->getName(),
+            ),
+            fn (ReflectionMethod $method): bool => $method->getDeclaringClass()->getName() === $reflectionClass->getName(),
         );
 
         $methodsFromTraits = [];

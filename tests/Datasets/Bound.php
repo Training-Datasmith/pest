@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 dataset('bound.closure', function () {
     yield function () {
         return 1;

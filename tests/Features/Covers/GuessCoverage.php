@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use Tests\Fixtures\Covers\CoversClass3;
 
-function testCoversFunction2() {}
+function testCoversFunction2()
+{
+}
 
 it('guesses if the given argument is a class or function', function () {
     $attributes = (new ReflectionClass($this))->getAttributes();

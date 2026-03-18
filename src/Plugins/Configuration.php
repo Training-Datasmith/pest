@@ -53,7 +53,7 @@ final class Configuration implements HandlesArguments, Terminable
             unlink($path);
         }
 
-        $doc = new DOMDocument;
+        $doc = new DOMDocument();
         $doc->load(self::BASE_PHPUNIT_FILE);
 
         $contents = $doc->saveXML();
@@ -68,8 +68,8 @@ final class Configuration implements HandlesArguments, Terminable
      */
     private function hasCustomConfigurationFile(): bool
     {
-        $cliConfiguration = (new CliConfigurationBuilder)->fromParameters([]);
-        $configurationFile = (new XmlConfigurationFileFinder)->find($cliConfiguration);
+        $cliConfiguration = (new CliConfigurationBuilder())->fromParameters([]);
+        $configurationFile = (new XmlConfigurationFileFinder())->find($cliConfiguration);
 
         return is_string($configurationFile);
     }

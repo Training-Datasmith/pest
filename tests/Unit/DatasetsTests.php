@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Repositories\DatasetsRepository;
 
 it('show only the names of named datasets in their description', function () {

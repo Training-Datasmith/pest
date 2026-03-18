@@ -12,8 +12,14 @@ declare(strict_types=1);
 
 namespace PHPUnit\Logging\JUnit;
 
+use function assert;
+use function basename;
+
 use DOMDocument;
 use DOMElement;
+
+use function is_int;
+
 use Pest\Logging\Converter;
 use Pest\Support\Container;
 use Pest\TestSuite;
@@ -33,13 +39,11 @@ use PHPUnit\Event\Test\Prepared;
 use PHPUnit\Event\Test\PrintedUnexpectedOutput;
 use PHPUnit\Event\Test\Skipped;
 use PHPUnit\Event\TestSuite\Started;
+
 use PHPUnit\Event\UnknownSubscriberTypeException;
 use PHPUnit\TextUI\Output\Printer;
 use PHPUnit\Util\Xml;
 
-use function assert;
-use function basename;
-use function is_int;
 use function sprintf;
 use function str_replace;
 use function trim;

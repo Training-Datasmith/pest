@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Tests\CustomTestCase\CustomTestCase;
 
 pest()->use(CustomTestCase::class)->in(__DIR__);

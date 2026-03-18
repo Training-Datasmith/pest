@@ -73,7 +73,9 @@ final class GitDirtyTestCaseFilter implements TestCaseFilter
         $dirtyFiles = array_map(
             fn (string $file, string $status): string => in_array($status, ['R', 'RM'], true)
                 ? explode(' -> ', $file)[1]
-                : $file, array_keys($dirtyFiles), $dirtyFiles,
+                : $file,
+            array_keys($dirtyFiles),
+            $dirtyFiles,
         );
 
         $dirtyFiles = array_filter(
@@ -85,7 +87,7 @@ final class GitDirtyTestCaseFilter implements TestCaseFilter
         $dirtyFiles = array_values($dirtyFiles);
 
         if ($dirtyFiles === []) {
-            Panic::with(new NoDirtyTestsFound);
+            Panic::with(new NoDirtyTestsFound());
         }
 
         $this->changedFiles = $dirtyFiles;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('allows properties to be accessed from the value', function () {
     expect(['foo' => 1])->foo->toBeInt()->toEqual(1);
 });
@@ -53,7 +55,7 @@ it('can compose complex expectations', function () {
 });
 
 it('works with objects', function () {
-    expect(new HasProperties)
+    expect(new HasProperties())
         ->name->toEqual('foo')->not->toEqual('world')
         ->posts->toHaveCount(2)->each(function ($post) {
             $post->is_published->toBeTrue();
@@ -69,13 +71,13 @@ it('works with objects', function () {
 });
 
 it('works with nested properties', function () {
-    expect(new HasProperties)
+    expect(new HasProperties())
         ->nested->foo->bar->toBeString()->toEqual('baz')
         ->posts->toBeArray()->toHaveCount(2);
 });
 
 it('works with higher order tests')
-    ->expect(new HasProperties)
+    ->expect(new HasProperties())
     ->nested->foo->bar->toBeString()->toEqual('baz')
     ->posts->toBeArray()->toHaveCount(2);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Configuration\Printer;
 
 it('creates a printer instance', function () {

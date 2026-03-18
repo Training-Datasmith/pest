@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Pest\Runner\Filter;
 
 use Pest\Contracts\HasPrintableTestCaseName;
-use PHPUnit\Framework\Test;
 use RecursiveFilterIterator;
-use RecursiveIterator;
 
 /**
  * @internal

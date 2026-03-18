@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\Dusk\Browser;
 
 it('has {name} page', function () {

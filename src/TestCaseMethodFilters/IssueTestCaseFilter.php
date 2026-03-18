@@ -14,7 +14,7 @@ final readonly class IssueTestCaseFilter implements TestCaseMethodFilter
      */
     public function __construct(private int $number)
     {
-        //
+
     }
 
     /**

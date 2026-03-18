@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Plugins\Coverage as CoveragePlugin;
 use Pest\Support\Coverage;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -7,7 +9,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 it('has plugin')->assertTrue(class_exists(CoveragePlugin::class));
 
 it('adds coverage if --coverage exist', function () {
-    $plugin = new CoveragePlugin(new ConsoleOutput);
+    $plugin = new CoveragePlugin(new ConsoleOutput());
 
     expect($plugin->coverage)->toBeFalse();
     $arguments = $plugin->handleArguments([]);
@@ -20,7 +22,7 @@ it('adds coverage if --coverage exist', function () {
 })->skip(! Coverage::isAvailable() || ! function_exists('xdebug_info') || ! in_array('coverage', xdebug_info('mode'), true), 'Coverage is not available');
 
 it('adds coverage if --min exist', function () {
-    $plugin = new CoveragePlugin(new ConsoleOutput);
+    $plugin = new CoveragePlugin(new ConsoleOutput());
     expect($plugin->coverageMin)->toEqual(0.0)
         ->and($plugin->coverage)->toBeFalse();
 
@@ -35,8 +37,7 @@ it('adds coverage if --min exist', function () {
 });
 
 it('generates coverage based on file input', function () {
-    expect(Coverage::getMissingCoverage(new class
-    {
+    expect(Coverage::getMissingCoverage(new class () {
         public function lineCoverageData(): array
         {
             return [

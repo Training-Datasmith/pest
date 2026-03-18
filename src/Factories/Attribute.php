@@ -14,6 +14,6 @@ final class Attribute
      */
     public function __construct(public string $name, public iterable $arguments)
     {
-        //
+
     }
 }

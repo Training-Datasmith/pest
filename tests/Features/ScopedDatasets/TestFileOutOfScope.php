@@ -1,6 +1,8 @@
 <?php
 
-$state = new stdClass;
+declare(strict_types=1);
+
+$state = new stdClass();
 $state->text = '';
 test('uses dataset', function ($value) use ($state) {
     $state->text .= $value;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pest\Expectations;
 
-use Pest\Expectation;
-
 use function expect;
+
+use Pest\Expectation;
 
 /**
  * @internal
@@ -27,7 +27,9 @@ final class EachExpectation
      *
      * @param  Expectation<TValue>  $original
      */
-    public function __construct(private readonly Expectation $original) {}
+    public function __construct(private readonly Expectation $original)
+    {
+    }
 
     /**
      * Creates a new expectation.

@@ -36,22 +36,27 @@ declare(strict_types=1);
 
 namespace PHPUnit\Runner;
 
-use Exception;
-use Pest\Contracts\HasPrintableTestCaseName;
-use Pest\Panic;
-use Pest\TestCases\IgnorableTestCase;
-use Pest\TestSuite;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use ReflectionException;
-use Throwable;
-
 use function array_diff;
 use function array_values;
 use function basename;
 use function class_exists;
+
+use Exception;
+
 use function get_declared_classes;
+
+use Pest\Contracts\HasPrintableTestCaseName;
+use Pest\Panic;
+use Pest\TestCases\IgnorableTestCase;
+
+use Pest\TestSuite;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
+
 use function substr;
+
+use Throwable;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit

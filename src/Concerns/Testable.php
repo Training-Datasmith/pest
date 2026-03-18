@@ -434,7 +434,7 @@ trait Testable
      */
     public function preset(): Preset
     {
-        return new Preset;
+        return new Preset();
     }
 
     #[PostCondition]

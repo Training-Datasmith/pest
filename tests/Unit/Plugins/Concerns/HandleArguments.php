@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Plugins\Concerns\HandleArguments;
 
 test('method hasArgument', function (string $argument, bool $expectedResult) {
-    $obj = new class
-    {
+    $obj = new class () {
         use HandleArguments;
     };
 

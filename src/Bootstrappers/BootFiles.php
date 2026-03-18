@@ -8,12 +8,14 @@ use Pest\Contracts\Bootstrapper;
 use Pest\Exceptions\FatalException;
 use Pest\Support\DatasetInfo;
 use Pest\Support\Str;
+
+use function Pest\testDirectory;
+
 use Pest\TestSuite;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use SebastianBergmann\FileIterator\Facade as PhpUnitFileIterator;
 
-use function Pest\testDirectory;
+use SebastianBergmann\FileIterator\Facade as PhpUnitFileIterator;
 
 /**
  * @internal
@@ -85,7 +87,7 @@ final class BootFiles implements Bootstrapper
     {
         assert($testsPath !== '');
 
-        $files = (new PhpUnitFileIterator)->getFilesAsArray($testsPath, '.php');
+        $files = (new PhpUnitFileIterator())->getFilesAsArray($testsPath, '.php');
 
         foreach ($files as $file) {
             if (DatasetInfo::isADatasetsFile($file) || DatasetInfo::isInsideADatasetsDirectory($file)) {

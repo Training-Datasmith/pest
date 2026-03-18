@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\Backtrace;
 
 it('gets file name from called file', function () {

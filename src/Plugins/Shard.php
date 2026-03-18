@@ -39,7 +39,7 @@ final class Shard implements AddsOutput, HandlesArguments
     public function __construct(
         private readonly OutputInterface $output,
     ) {
-        //
+
     }
 
     /**

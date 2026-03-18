@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 beforeEach(function () {
     $this->bar = 2;
 });
@@ -46,10 +48,12 @@ describe('with expectations', function () {
     beforeEach()->expect(true)->toBeTrue();
 
     describe('nested block', function () {
-        test('test', function () {});
+        test('test', function () {
+        });
     });
 
-    test('test', function () {});
+    test('test', function () {
+    });
 });
 
 describe('matching describe block names', function () {

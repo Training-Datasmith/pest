@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('an exception is thrown if the the type is not iterable', function () {
     expect('Foobar')->each->sequence();
 })->throws(BadMethodCallException::class, 'Expectation value is not iterable.');

@@ -103,7 +103,7 @@ final class TestCall // @phpstan-ignore-line
             $closure->call($this);
         };
 
-        new AfterEachCall($this->testSuite, $this->filename, $when->bindTo(new \stdClass));
+        new AfterEachCall($this->testSuite, $this->filename, $when->bindTo(new \stdClass()));
 
         return $this;
     }

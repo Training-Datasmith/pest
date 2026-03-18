@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Exceptions\ShouldNotHappen;
 use Pest\Support\Container;
 use Pest\TestSuite;
@@ -7,7 +9,7 @@ use Pest\TestSuite;
 pest()->group('container');
 
 beforeEach(function () {
-    $this->container = new Container;
+    $this->container = new Container();
 });
 
 it('exists')
@@ -50,15 +52,21 @@ it('cannot resolve a parameter without type', function () {
 
 class ClassWithDependency
 {
-    public function __construct(Container $container) {}
+    public function __construct(Container $container)
+    {
+    }
 }
 
 class ClassWithSubDependency
 {
-    public function __construct(ClassWithDependency $param) {}
+    public function __construct(ClassWithDependency $param)
+    {
+    }
 }
 
 class ClassWithoutTypeParameter
 {
-    public function __construct($param) {}
+    public function __construct($param)
+    {
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('output', function () {
     echo 'this is unexpected output';
 

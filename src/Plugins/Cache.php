@@ -36,12 +36,12 @@ final class Cache implements HandlesArguments
     {
         if (! $this->hasArgument('--cache-directory', $arguments)) {
 
-            $cliConfiguration = (new CliConfigurationBuilder)->fromParameters([]);
-            $configurationFile = (new XmlConfigurationFileFinder)->find($cliConfiguration);
+            $cliConfiguration = (new CliConfigurationBuilder())->fromParameters([]);
+            $configurationFile = (new XmlConfigurationFileFinder())->find($cliConfiguration);
             $xmlConfiguration = DefaultConfiguration::create();
 
             if (is_string($configurationFile)) {
-                $xmlConfiguration = (new Loader)->load($configurationFile);
+                $xmlConfiguration = (new Loader())->load($configurationFile);
             }
 
             if (! $xmlConfiguration->phpunit()->hasCacheDirectory()) {

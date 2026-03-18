@@ -71,11 +71,11 @@ final class TestSuite
         string $rootPath,
         public string $testPath,
     ) {
-        $this->beforeAll = new BeforeAllRepository;
-        $this->beforeEach = new BeforeEachRepository;
-        $this->tests = new TestRepository;
-        $this->afterEach = new AfterEachRepository;
-        $this->afterAll = new AfterAllRepository;
+        $this->beforeAll = new BeforeAllRepository();
+        $this->beforeEach = new BeforeEachRepository();
+        $this->tests = new TestRepository();
+        $this->afterEach = new AfterEachRepository();
+        $this->afterAll = new AfterAllRepository();
         $this->rootPath = (string) realpath($rootPath);
         $this->snapshots = new SnapshotRepository(
             $this->rootPath,
@@ -102,7 +102,7 @@ final class TestSuite
         }
 
         if (! self::$instance instanceof self) {
-            throw new InvalidPestCommand;
+            throw new InvalidPestCommand();
         }
 
         return self::$instance;

@@ -89,11 +89,13 @@ final class Events
         ] = $context;
 
         foreach ($notes as $note) {
-            render(sprintf(<<<'HTML'
+            render(sprintf(
+                <<<'HTML'
                 <div class="ml-2">
                     <span class="text-gray"> // %s</span>
                 </div>
-                HTML, $note,
+                HTML,
+                $note,
             ));
         }
     }

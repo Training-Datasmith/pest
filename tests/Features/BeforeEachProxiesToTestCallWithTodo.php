@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 beforeEach()->todo();
 
 test('is marked as todo 1', function () {

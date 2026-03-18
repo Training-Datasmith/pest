@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 todo('something todo later');
 
 test('something todo later chained')->todo();

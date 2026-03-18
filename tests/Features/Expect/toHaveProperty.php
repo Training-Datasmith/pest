@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\ExpectationFailedException;
 
-$obj = new stdClass;
+$obj = new stdClass();
 $obj->foo = 'bar';
 $obj->fooNull = null;
 

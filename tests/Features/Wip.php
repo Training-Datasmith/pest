@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('may have an associated assignee', function () {
     expect(true)->toBeTrue();
 })->wip(assignee: 'nunomaduro');

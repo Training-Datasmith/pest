@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Tests\CustomTestCase\CustomTestCase;
 use Tests\CustomTestCaseInSubFolders\SubFolder\SubFolder\CustomTestCaseInSubFolder;
 

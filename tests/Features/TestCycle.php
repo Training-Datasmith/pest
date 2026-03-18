@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use function PHPUnit\Framework\assertFalse;
 
-$foo = new stdClass;
+$foo = new stdClass();
 $foo->beforeAll = false;
 $foo->beforeEach = false;
 $foo->afterEach = false;

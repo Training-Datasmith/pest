@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\Attributes\CoversClass;
 use Tests\Fixtures\Covers\CoversClass1;
 

@@ -47,7 +47,7 @@ final readonly class Panic
         try {
             $output = Container::getInstance()->get(OutputInterface::class);
         } catch (Throwable) {
-            $output = new ConsoleOutput;
+            $output = new ConsoleOutput();
         }
 
         assert($output instanceof OutputInterface);

@@ -24,7 +24,8 @@ final readonly class EnsureTeamCityEnabled implements ConfiguredSubscriber
         private InputInterface $input,
         private OutputInterface $output,
         private TestSuite $testSuite,
-    ) {}
+    ) {
+    }
 
     /**
      * Runs the subscriber.

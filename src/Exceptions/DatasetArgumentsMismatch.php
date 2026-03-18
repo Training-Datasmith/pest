@@ -17,5 +17,4 @@ final class DatasetArgumentsMismatch extends Exception
         }
     }
 
-    //
 }

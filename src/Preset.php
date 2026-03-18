@@ -41,7 +41,7 @@ final class Preset
      */
     public function __construct()
     {
-        //
+
     }
 
     /**

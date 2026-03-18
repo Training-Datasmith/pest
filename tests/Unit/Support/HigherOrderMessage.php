@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\HigherOrderMessage;
 
 test('undefined method exceptions', function () {

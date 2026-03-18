@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('once', function () {
     expect(true)->toBeTrue();
 })->repeat(times: 1);

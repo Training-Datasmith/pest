@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\Reflection;
 
 it('gets file name from closure', function () {
-    $fileName = Reflection::getFileNameFromClosure(function () {});
+    $fileName = Reflection::getFileNameFromClosure(function () {
+    });
 
     expect($fileName)->toBe(__FILE__);
 });
 
 it('gets property values', function () {
-    $class = new class
-    {
+    $class = new class () {
         private $foo = 'bar';
     };
 

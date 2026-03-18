@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\DatasetInfo;
 
 it('can check if dataset is defined inside a Datasets directory', function (string $file, bool $inside) {

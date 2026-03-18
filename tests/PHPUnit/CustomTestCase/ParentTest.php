@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\CustomTestCase;
 
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
-
 use function PHPUnit\Framework\assertTrue;
+
+use PHPUnit\Framework\Attributes\Test;
+
+use PHPUnit\Framework\TestCase;
 
 class ParentTest extends TestCase
 {

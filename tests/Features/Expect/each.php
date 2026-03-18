@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Expectation;
 
 test('an exception is thrown if the the type is not iterable', function () {

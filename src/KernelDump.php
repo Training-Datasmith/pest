@@ -71,7 +71,9 @@ final class KernelDump
         if ($this->isInternalError($this->buffer)) {
             $type = 'ERROR';
             $this->buffer = str_replace(
-                sprintf('An error occurred inside PHPUnit.%s%sMessage:  ', PHP_EOL, PHP_EOL), '', $this->buffer,
+                sprintf('An error occurred inside PHPUnit.%s%sMessage:  ', PHP_EOL, PHP_EOL),
+                '',
+                $this->buffer,
             );
         }
 

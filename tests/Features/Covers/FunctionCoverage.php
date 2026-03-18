@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\Attributes\CoversFunction;
 
-function testCoversFunction() {}
+function testCoversFunction()
+{
+}
 
 it('uses the correct PHPUnit attribute for function', function () {
     $attributes = (new ReflectionClass($this))->getAttributes();

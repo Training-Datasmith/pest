@@ -50,7 +50,7 @@ final readonly class Kernel
         private Application $application,
         private OutputInterface $output,
     ) {
-        //
+
     }
 
     /**
@@ -67,7 +67,7 @@ final readonly class Kernel
             ->add(Container::class, $container);
 
         $kernel = new self(
-            new Application,
+            new Application(),
             $output,
         );
 

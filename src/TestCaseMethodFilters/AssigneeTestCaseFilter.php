@@ -14,7 +14,7 @@ final readonly class AssigneeTestCaseFilter implements TestCaseMethodFilter
      */
     public function __construct(private string $assignee)
     {
-        //
+
     }
 
     /**

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\ExpectationFailedException;
 
 expect(true)->toBeTrue()->and(false)->toBeFalse();
 
 test('strict comparisons', function () {
-    $nuno = new stdClass;
-    $dries = new stdClass;
+    $nuno = new stdClass();
+    $dries = new stdClass();
 
     expect($nuno)->toBe($nuno)->not->toBe($dries);
 });

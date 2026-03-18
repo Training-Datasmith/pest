@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Support\Str;
 
 it('evaluates the code', function ($evaluatable, $expected) {

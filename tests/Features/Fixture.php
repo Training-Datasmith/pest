@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('may return a file path', function () {
     $file = fixture('phpunit-in-isolation.xml');
 

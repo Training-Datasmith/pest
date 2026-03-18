@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 beforeEach(fn () => $this->count = 1);
 
 test('before each', function () {
@@ -102,7 +104,8 @@ describe('with test after describe', function () {
         $this->count++;
     });
 
-    describe('foo', function () {});
+    describe('foo', function () {
+    });
 
     it('should run the before each', function () {
         expect($this->count)->toBe(2);

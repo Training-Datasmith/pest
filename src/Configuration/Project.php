@@ -40,7 +40,7 @@ final class Project
      */
     public static function getInstance(): self
     {
-        return self::$instance ??= new self;
+        return self::$instance ??= new self();
     }
 
     /**

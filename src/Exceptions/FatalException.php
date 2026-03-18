@@ -12,5 +12,4 @@ use RuntimeException;
  */
 final class FatalException extends RuntimeException implements RenderlessTrace
 {
-    //
 }

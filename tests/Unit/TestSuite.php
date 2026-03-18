@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Exceptions\DatasetMissing;
 use Pest\Exceptions\TestAlreadyExist;
 use Pest\Exceptions\TestClosureMustNotBeStatic;
@@ -21,7 +23,8 @@ it('does not allow to add the same test description twice', function () {
 it('does not allow static closures', function () {
     $testSuite = new TestSuite(getcwd(), 'tests');
 
-    $method = new TestCaseMethodFactory('foo', static function () {});
+    $method = new TestCaseMethodFactory('foo', static function () {
+    });
     $method->description = 'bar';
 
     $testSuite->tests->set($method);
@@ -33,7 +36,8 @@ it('does not allow static closures', function () {
 it('alerts users about tests with arguments but no input', function () {
     $testSuite = new TestSuite(getcwd(), 'tests');
 
-    $method = new TestCaseMethodFactory('foo', function (int $arg) {});
+    $method = new TestCaseMethodFactory('foo', function (int $arg) {
+    });
 
     $method->description = 'bar';
 

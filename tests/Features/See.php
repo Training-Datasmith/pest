@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pest\Panic;
 
 it('can reference a specific class', function () {

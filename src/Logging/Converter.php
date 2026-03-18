@@ -44,7 +44,7 @@ final readonly class Converter
     public function __construct(
         private string $rootPath,
     ) {
-        $this->stateGenerator = new StateGenerator;
+        $this->stateGenerator = new StateGenerator();
     }
 
     /**

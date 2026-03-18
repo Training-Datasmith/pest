@@ -54,7 +54,7 @@ final readonly class Thanks
         $wantsToSupport = false;
 
         if (getenv('PEST_NO_SUPPORT') !== 'true' && $this->input->isInteractive()) {
-            $wantsToSupport = (new SymfonyQuestionHelper)->ask(
+            $wantsToSupport = (new SymfonyQuestionHelper())->ask(
                 new ArrayInput([]),
                 $this->output,
                 new ConfirmationQuestion(

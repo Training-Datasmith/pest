@@ -44,15 +44,16 @@ declare(strict_types=1);
 
 namespace PHPUnit\TextUI;
 
+use function array_map;
+
 use Pest\Plugins\Only;
 use Pest\Runner\Filter\EnsureTestCaseIsInitiatedFilter;
 use PHPUnit\Event;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Runner\Filter\Factory;
 use PHPUnit\TextUI\Configuration\Configuration;
-use PHPUnit\TextUI\Configuration\FilterNotConfiguredException;
 
-use function array_map;
+use PHPUnit\TextUI\Configuration\FilterNotConfiguredException;
 
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
@@ -65,7 +66,7 @@ final readonly class TestSuiteFilterProcessor
      */
     public function process(Configuration $configuration, TestSuite $suite): void
     {
-        $factory = new Factory;
+        $factory = new Factory();
 
         // @phpstan-ignore-next-line
         (fn () => $this->filters[] = [

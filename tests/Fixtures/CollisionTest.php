@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 test('error', function () {
     throw new Exception('error');
 })->skip(! isset($_SERVER['COLLISION_TEST']));

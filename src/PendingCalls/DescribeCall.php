@@ -35,7 +35,7 @@ final class DescribeCall
         public readonly Description $description,
         public readonly Closure $tests
     ) {
-        //
+
     }
 
     /**

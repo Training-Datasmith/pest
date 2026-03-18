@@ -6,10 +6,12 @@ namespace Pest\Plugins;
 
 use Pest\Contracts\Plugins\HandlesArguments;
 use Pest\Support\View;
-use PHPUnit\TextUI\Help as PHPUnitHelp;
-use Symfony\Component\Console\Output\OutputInterface;
 
 use function Pest\version;
+
+use PHPUnit\TextUI\Help as PHPUnitHelp;
+
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @internal
@@ -97,7 +99,7 @@ final readonly class Help implements HandlesArguments
      */
     private function getContent(): array
     {
-        $helpReflection = new PHPUnitHelp;
+        $helpReflection = new PHPUnitHelp();
 
         // @phpstan-ignore-next-line
         $content = (fn (): array => $this->elements())->call($helpReflection);

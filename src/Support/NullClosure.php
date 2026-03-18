@@ -16,6 +16,7 @@ final class NullClosure
      */
     public static function create(): Closure
     {
-        return Closure::fromCallable(function (): void {});
+        return Closure::fromCallable(function (): void {
+        });
     }
 }

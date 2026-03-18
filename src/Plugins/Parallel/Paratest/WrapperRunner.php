@@ -4,7 +4,18 @@ declare(strict_types=1);
 
 namespace Pest\Plugins\Parallel\Paratest;
 
+use function array_merge;
+
+use function array_merge_recursive;
+use function array_shift;
+use function assert;
+use function count;
+
 use const DIRECTORY_SEPARATOR;
+
+use function dirname;
+use function file_get_contents;
+use function max;
 
 use NunoMaduro\Collision\Adapters\Phpunit\Support\ResultReflection;
 use ParaTest\Coverage\CoverageMerger;
@@ -21,24 +32,19 @@ use PHPUnit\Event\Test\AfterLastTestMethodFailed;
 use PHPUnit\Event\TestRunner\WarningTriggered;
 use PHPUnit\Runner\CodeCoverage;
 use PHPUnit\Runner\ResultCache\DefaultResultCache;
+
 use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
 use PHPUnit\TestRunner\TestResult\TestResult;
 use PHPUnit\TextUI\Configuration\CodeCoverageFilterRegistry;
 use PHPUnit\Util\ExcludeList;
+
+use function realpath;
+
 use SebastianBergmann\Timer\Timer;
 use SplFileInfo;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 
-use function array_merge;
-use function array_merge_recursive;
-use function array_shift;
-use function assert;
-use function count;
-use function dirname;
-use function file_get_contents;
-use function max;
-use function realpath;
 use function unlink;
 use function unserialize;
 use function usleep;
@@ -111,13 +117,13 @@ final class WrapperRunner implements RunnerInterface
         private readonly OutputInterface $output
     ) {
         $this->printer = new ResultPrinter($output, $options);
-        $this->timer = new Timer;
+        $this->timer = new Timer();
 
         $wrapper = realpath(
             dirname(__DIR__, 4).DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'worker.php',
         );
         assert($wrapper !== false);
-        $phpFinder = new PhpExecutableFinder;
+        $phpFinder = new PhpExecutableFinder();
         $phpBin = $phpFinder->find(false);
         assert($phpBin !== false);
         $parameters = [$phpBin];
@@ -134,7 +140,7 @@ final class WrapperRunner implements RunnerInterface
         $parameters[] = '--test-directory='.TestSuite::getInstance()->testPath;
 
         $this->parameters = $parameters;
-        $this->codeCoverageFilterRegistry = new CodeCoverageFilterRegistry;
+        $this->codeCoverageFilterRegistry = new CodeCoverageFilterRegistry();
     }
 
     public function run(): int
@@ -425,7 +431,7 @@ final class WrapperRunner implements RunnerInterface
             return;
         }
 
-        $coverageManager = new CodeCoverage;
+        $coverageManager = new CodeCoverage();
         $coverageManager->init(
             $this->options->configuration,
             $this->codeCoverageFilterRegistry,
@@ -457,9 +463,9 @@ final class WrapperRunner implements RunnerInterface
             return;
         }
 
-        $testSuite = (new LogMerger)->merge($this->junitFiles);
+        $testSuite = (new LogMerger())->merge($this->junitFiles);
         assert($testSuite instanceof \ParaTest\JUnit\TestSuite);
-        (new Writer)->write(
+        (new Writer())->write(
             $testSuite,
             $this->options->configuration->logfileJunit(),
         );

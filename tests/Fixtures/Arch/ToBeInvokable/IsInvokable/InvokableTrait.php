@@ -8,6 +8,6 @@ trait InvokableTrait
 {
     public function __invoke(): void
     {
-        //
+
     }
 }

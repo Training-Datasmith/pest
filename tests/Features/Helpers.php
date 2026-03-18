@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 function addUser()
 {
     test()->user = 'nuno';

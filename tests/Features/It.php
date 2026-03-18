@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('is a test', function () {
     expect(['key' => 'foo'])->toHaveKey('key')->key->toBeString();
 });

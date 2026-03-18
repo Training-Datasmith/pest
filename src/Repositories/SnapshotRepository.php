@@ -22,7 +22,8 @@ final class SnapshotRepository
         private readonly string $rootPath,
         private readonly string $testsPath,
         private readonly string $snapshotsPath,
-    ) {}
+    ) {
+    }
 
     /**
      * Checks if the snapshot exists.

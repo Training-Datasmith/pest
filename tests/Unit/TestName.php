@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 it('may start with P', function (string $real, string $toBePrinted) {
     $printed = preg_replace('/P\\\/', '', $real, 1);
 

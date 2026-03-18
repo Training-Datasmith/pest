@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 $runCounter = 0;
 
 test('first', function () use (&$runCounter) {

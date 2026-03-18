@@ -27,7 +27,7 @@ abstract class AbstractPreset // @pest-arch-ignore-line
     public function __construct(
         private readonly array $userNamespaces,
     ) {
-        //
+
     }
 
     /**

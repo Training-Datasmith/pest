@@ -21,7 +21,7 @@ final class Shell
      */
     public static function open(): void
     {
-        $config = new Configuration;
+        $config = new Configuration();
 
         $config->setUpdateCheck(Checker::NEVER);
 
@@ -95,7 +95,10 @@ final class Shell
         $config = app()->make('config');
 
         return ClassAliasAutoloader::register(
-            $shell, $path, $config->get('tinker.alias', []), $config->get('tinker.dont_alias', [])
+            $shell,
+            $path,
+            $config->get('tinker.alias', []),
+            $config->get('tinker.dont_alias', [])
         );
     }
 }

@@ -92,7 +92,7 @@ final readonly class Configuration
      */
     public function printer(): Configuration\Printer
     {
-        return new Configuration\Printer;
+        return new Configuration\Printer();
     }
 
     /**
@@ -100,7 +100,7 @@ final readonly class Configuration
      */
     public function presets(): Configuration\Presets
     {
-        return new Configuration\Presets;
+        return new Configuration\Presets();
     }
 
     /**
@@ -116,7 +116,7 @@ final readonly class Configuration
      */
     public function browser(): Browser\Configuration
     {
-        return new Browser\Configuration;
+        return new Browser\Configuration();
     }
 
     /**

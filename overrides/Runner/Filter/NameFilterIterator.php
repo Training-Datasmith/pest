@@ -45,15 +45,18 @@ declare(strict_types=1);
 
 namespace PHPUnit\Runner\Filter;
 
+use function end;
+
 use Pest\Contracts\HasPrintableTestCaseName;
 use PHPUnit\Framework\Test;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Runner\PhptTestCase;
+
+use function preg_match;
+
 use RecursiveFilterIterator;
 use RecursiveIterator;
 
-use function end;
-use function preg_match;
 use function sprintf;
 use function str_replace;
 

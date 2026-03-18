@@ -36,7 +36,7 @@ final class Result
      */
     public static function exitCode(Configuration $configuration, TestResult $result): int
     {
-        $shell = new ShellExitCodeCalculator;
+        $shell = new ShellExitCodeCalculator();
 
         return $shell->calculate($configuration, $result);
     }

@@ -15,14 +15,6 @@ use RecursiveIterator;
 final class EnsureTestCaseIsInitiatedFilter extends RecursiveFilterIterator
 {
     /**
-     * @param  RecursiveIterator<int, Test>  $iterator
-     */
-    public function __construct(RecursiveIterator $iterator)
-    {
-        parent::__construct($iterator);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function accept(): bool

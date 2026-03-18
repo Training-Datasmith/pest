@@ -104,7 +104,7 @@ final class WrapperRunner implements RunnerInterface
     /**
      * The code coverage filter registry.
      */
-    private CodeCoverageFilterRegistry $codeCoverageFilterRegistry;
+    private readonly CodeCoverageFilterRegistry $codeCoverageFilterRegistry;
 
     public function __construct(
         private readonly Options $options,

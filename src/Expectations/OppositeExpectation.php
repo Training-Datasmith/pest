@@ -637,7 +637,7 @@ final readonly class OppositeExpectation
     /**
      * Not supported.
      */
-    public function toOnlyImplement(): void
+    public function toOnlyImplement(): never
     {
         throw InvalidExpectation::fromMethods(['not', 'toOnlyImplement']);
     }
@@ -652,7 +652,7 @@ final readonly class OppositeExpectation
 
         return Targeted::make(
             $original,
-            fn (ObjectDescription $object): bool => isset($object->reflectionClass) === false || ! str_starts_with($object->reflectionClass->getShortName(), $prefix),
+            fn (ObjectDescription $object): bool => isset($object->reflectionClass) === false || ! str_starts_with((string) $object->reflectionClass->getShortName(), $prefix),
             "not to have prefix '{$prefix}'",
             FileLineFinder::where(fn (string $line): bool => str_contains($line, 'class')),
         );
@@ -668,7 +668,7 @@ final readonly class OppositeExpectation
 
         return Targeted::make(
             $original,
-            fn (ObjectDescription $object): bool => isset($object->reflectionClass) === false || ! str_ends_with($object->reflectionClass->getName(), $suffix),
+            fn (ObjectDescription $object): bool => isset($object->reflectionClass) === false || ! str_ends_with((string) $object->reflectionClass->getName(), $suffix),
             "not to have suffix '{$suffix}'",
             FileLineFinder::where(fn (string $line): bool => str_contains($line, 'class')),
         );
@@ -677,7 +677,7 @@ final readonly class OppositeExpectation
     /**
      * Not supported.
      */
-    public function toOnlyUse(): void
+    public function toOnlyUse(): never
     {
         throw InvalidExpectation::fromMethods(['not', 'toOnlyUse']);
     }
@@ -685,7 +685,7 @@ final readonly class OppositeExpectation
     /**
      * Not supported.
      */
-    public function toUseNothing(): void
+    public function toUseNothing(): never
     {
         throw InvalidExpectation::fromMethods(['not', 'toUseNothing']);
     }
@@ -716,7 +716,7 @@ final readonly class OppositeExpectation
         ), is_string($targets) ? [$targets] : $targets));
     }
 
-    public function toOnlyBeUsedIn(): void
+    public function toOnlyBeUsedIn(): never
     {
         throw InvalidExpectation::fromMethods(['not', 'toOnlyBeUsedIn']);
     }
@@ -724,7 +724,7 @@ final readonly class OppositeExpectation
     /**
      * Asserts that the given expectation dependency is not used.
      */
-    public function toBeUsedInNothing(): void
+    public function toBeUsedInNothing(): never
     {
         throw InvalidExpectation::fromMethods(['not', 'toBeUsedInNothing']);
     }

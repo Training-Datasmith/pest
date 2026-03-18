@@ -624,7 +624,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHavePublicMethodsBesides(): void
+    public function toHavePublicMethodsBesides(): never
     {
         throw InvalidExpectation::fromMethods(['toHavePublicMethodsBesides']);
     }
@@ -632,7 +632,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHavePublicMethods(): void
+    public function toHavePublicMethods(): never
     {
         throw InvalidExpectation::fromMethods(['toHavePublicMethods']);
     }
@@ -640,7 +640,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHaveProtectedMethodsBesides(): void
+    public function toHaveProtectedMethodsBesides(): never
     {
         throw InvalidExpectation::fromMethods(['toHaveProtectedMethodsBesides']);
     }
@@ -648,7 +648,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHaveProtectedMethods(): void
+    public function toHaveProtectedMethods(): never
     {
         throw InvalidExpectation::fromMethods(['toHaveProtectedMethods']);
     }
@@ -656,7 +656,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHavePrivateMethodsBesides(): void
+    public function toHavePrivateMethodsBesides(): never
     {
         throw InvalidExpectation::fromMethods(['toHavePrivateMethodsBesides']);
     }
@@ -664,7 +664,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toHavePrivateMethods(): void
+    public function toHavePrivateMethods(): never
     {
         throw InvalidExpectation::fromMethods(['toHavePrivateMethods']);
     }
@@ -834,7 +834,7 @@ final class Expectation
     {
         return Targeted::make(
             $this,
-            fn (ObjectDescription $object): bool => isset($object->reflectionClass) && str_starts_with($object->reflectionClass->getShortName(), $prefix),
+            fn (ObjectDescription $object): bool => isset($object->reflectionClass) && str_starts_with((string) $object->reflectionClass->getShortName(), $prefix),
             "to have prefix '{$prefix}'",
             FileLineFinder::where(fn (string $line): bool => str_contains($line, 'class')),
         );
@@ -847,7 +847,7 @@ final class Expectation
     {
         return Targeted::make(
             $this,
-            fn (ObjectDescription $object): bool => isset($object->reflectionClass) && str_ends_with($object->reflectionClass->getName(), $suffix),
+            fn (ObjectDescription $object): bool => isset($object->reflectionClass) && str_ends_with((string) $object->reflectionClass->getName(), $suffix),
             "to have suffix '{$suffix}'",
             FileLineFinder::where(fn (string $line): bool => str_contains($line, 'class')),
         );
@@ -907,7 +907,7 @@ final class Expectation
     /**
      * Not supported.
      */
-    public function toBeUsed(): void
+    public function toBeUsed(): never
     {
         throw InvalidExpectation::fromMethods(['toBeUsed']);
     }

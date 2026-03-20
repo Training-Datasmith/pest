@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Configuration;
 
-use NunoMaduro\Collision\Adapters\Phpunit\Printers\DefaultPrinter;
-
+use Nuno_Maduro\Collision\Adapters\Phpunit\Printers\Default_Printer;
 /**
  * @internal
  */
@@ -16,8 +14,7 @@ final readonly class Printer
      */
     public function compact(): self
     {
-        DefaultPrinter::compact(true);
-
+        Default_Printer::compact(true);
         return $this;
     }
 }

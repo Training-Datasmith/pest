@@ -1,38 +1,32 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
-
+use Pest\Contracts\Plugins\Handles_Arguments;
 /**
  * @internal
  */
-final class Verbose implements HandlesArguments
+final class Verbose implements Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     /**
      * The list of verbosity levels.
      */
     private const array VERBOSITY_LEVELS = ['v', 'vv', 'vvv', 'q'];
-
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
         foreach (self::VERBOSITY_LEVELS as $level) {
-            if ($this->hasArgument('-'.$level, $arguments)) {
-                $arguments = $this->popArgument('-'.$level, $arguments);
+            if ($this->has_argument('-' . $level, $arguments)) {
+                $arguments = $this->pop_argument('-' . $level, $arguments);
             }
         }
-
-        if ($this->hasArgument('--quiet', $arguments)) {
-            return $this->popArgument('--quiet', $arguments);
+        if ($this->has_argument('--quiet', $arguments)) {
+            return $this->pop_argument('--quiet', $arguments);
         }
-
         return $arguments;
     }
 }

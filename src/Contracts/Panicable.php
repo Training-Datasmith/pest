@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Contracts;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Output\Output_Interface;
 /**
  * @internal
  */
@@ -14,10 +12,9 @@ interface Panicable
     /**
      * Renders the panic on the given output.
      */
-    public function render(OutputInterface $output): void;
-
+    public function render(Output_Interface $output): void;
     /**
      * The exit code to be used.
      */
-    public function exitCode(): int;
+    public function exit_code(): int;
 }

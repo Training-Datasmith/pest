@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
-use SebastianBergmann\Exporter\Exporter as BaseExporter;
-use SebastianBergmann\RecursionContext\Context;
-
+use Sebastian_Bergmann\Exporter\Exporter as BaseExporter;
+use Sebastian_Bergmann\Recursion_Context\Context;
 /**
  * @internal
  */
@@ -16,74 +14,52 @@ final readonly class Exporter
      * The maximum number of items in an array to export.
      */
     private const int MAX_ARRAY_ITEMS = 3;
-
     /**
      * Creates a new Exporter instance.
      */
-    public function __construct(
-        private BaseExporter $exporter,
-    ) {
+    public function __construct(private Base_Exporter $exporter)
+    {
         // ...
     }
-
     /**
      * Creates a new Exporter instance.
      */
     public static function default(): self
     {
-        return new self(
-            new BaseExporter()
-        );
+        return new self(new Base_Exporter());
     }
-
     /**
      * Exports a value into a single-line string recursively.
      *
      * @param  array<int|string, mixed>  $data
      */
-    public function shortenedRecursiveExport(array &$data, ?Context $context = null): string
+    public function shortened_recursive_export(array &$data, ?Context $context = null): string
     {
         $result = [];
         $array = $data;
-        $itemsCount = 0;
+        $items_count = 0;
         $exporter = self::default();
         $context ??= new Context();
-
         $context->add($data);
-
         foreach ($array as $key => $value) {
-            if (++$itemsCount > self::MAX_ARRAY_ITEMS) {
+            if (++$items_count > self::MAX_ARRAY_ITEMS) {
                 $result[] = '…';
-
                 break;
             }
-
-            if (! is_array($value)) {
-                $result[] = $exporter->shortenedExport($value);
-
+            if (!is_array($value)) {
+                $result[] = $exporter->shortened_export($value);
                 continue;
             }
-
-            $result[] = $context->contains($data[$key]) !== false
-                ? '*RECURSION*'
-                // @phpstan-ignore-next-line
-                : sprintf('[%s]', $this->shortenedRecursiveExport($data[$key], $context));
+            $result[] = $context->contains($data[$key]) !== false ? '*RECURSION*' : sprintf('[%s]', $this->shortened_recursive_export($data[$key], $context));
         }
-
         return implode(', ', $result);
     }
-
     /**
      * Exports a value into a single-line string.
      */
-    public function shortenedExport(mixed $value): string
+    public function shortened_export(mixed $value): string
     {
-        $map = [
-            '#\.{3}#' => '…',
-            '#\\\n\s*#' => '',
-            '# Object \(…\)#' => '',
-        ];
-
-        return (string) preg_replace(array_keys($map), array_values($map), $this->exporter->shortenedExport($value));
+        $map = ['#\.{3}#' => '…', '#\\\\n\s*#' => '', '# Object \(…\)#' => ''];
+        return (string) preg_replace(array_keys($map), array_values($map), $this->exporter->shortened_export($value));
     }
 }

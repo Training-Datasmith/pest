@@ -1,16 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Contracts\Plugins;
 
 /**
  * @internal
  */
-interface AddsOutput
+interface Adds_Output
 {
     /**
      * Adds output after the Test Suite execution.
      */
-    public function addOutput(int $exitCode): int;
+    public function add_output(int $exit_code): int;
 }

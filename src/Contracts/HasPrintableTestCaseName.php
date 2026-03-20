@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Contracts;
 
-use NunoMaduro\Collision\Contracts\Adapters\Phpunit\HasPrintableTestCaseName as BaseHasPrintableTestCaseName;
-
+use Nuno_Maduro\Collision\Contracts\Adapters\Phpunit\Has_Printable_Test_Case_Name as BaseHasPrintableTestCaseName;
 /**
  * @internal
  */
-interface HasPrintableTestCaseName extends BaseHasPrintableTestCaseName
+interface Has_Printable_Test_Case_Name extends Base_Has_Printable_Test_Case_Name
 {
     // ..
 }

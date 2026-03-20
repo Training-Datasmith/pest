@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins\Actions;
 
 use Pest\Contracts\Plugins;
 use Pest\Plugin\Loader;
-
 /**
  * @internal
  */
-final class CallsTerminable
+final class Calls_Terminable
 {
     /**
      * Executes the Plugin action.
@@ -19,8 +17,7 @@ final class CallsTerminable
      */
     public static function execute(): void
     {
-        $plugins = Loader::getPlugins(Plugins\Terminable::class);
-
+        $plugins = Loader::get_plugins(Plugins\Terminable::class);
         /** @var Plugins\Terminable $plugin */
         foreach ($plugins as $plugin) {
             $plugin->terminate();

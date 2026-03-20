@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Contracts;
 
-interface TestCaseFilter
+interface Test_Case_Filter
 {
     /**
      * Whether the test case is accepted.
      */
-    public function accept(string $testCaseFilename): bool;
+    public function accept(string $test_case_filename): bool;
 }

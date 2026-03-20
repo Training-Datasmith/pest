@@ -1,293 +1,197 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City;
 
-namespace Pest\Logging\TeamCity;
-
-use NunoMaduro\Collision\Adapters\Phpunit\Style;
-use Pest\Exceptions\ShouldNotHappen;
+use Nuno_Maduro\Collision\Adapters\Phpunit\Style;
+use Pest\Exceptions\Should_Not_Happen;
 use Pest\Logging\Converter;
-use Pest\Logging\TeamCity\Subscriber\TestConsideredRiskySubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestErroredSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestExecutionFinishedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestFailedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestFinishedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestPreparedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestSkippedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestSuiteFinishedSubscriber;
-use Pest\Logging\TeamCity\Subscriber\TestSuiteStartedSubscriber;
-use PHPUnit\Event\Code\Test;
-use PHPUnit\Event\EventFacadeIsSealedException;
-use PHPUnit\Event\Facade;
-use PHPUnit\Event\Telemetry\Duration;
-use PHPUnit\Event\Telemetry\HRTime;
-use PHPUnit\Event\Telemetry\Info;
-use PHPUnit\Event\Telemetry\Snapshot;
-use PHPUnit\Event\Test\ConsideredRisky;
-use PHPUnit\Event\Test\Errored;
-use PHPUnit\Event\Test\Failed;
-use PHPUnit\Event\Test\Finished;
-use PHPUnit\Event\Test\Prepared;
-use PHPUnit\Event\Test\Skipped;
-use PHPUnit\Event\TestRunner\ExecutionFinished;
-use PHPUnit\Event\TestSuite\Finished as TestSuiteFinished;
-use PHPUnit\Event\TestSuite\Started as TestSuiteStarted;
-use PHPUnit\Event\UnknownSubscriberTypeException;
-use PHPUnit\TestRunner\TestResult\Facade as TestResultFacade;
+use Pest\Logging\Team_City\Subscriber\Test_Considered_Risky_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Errored_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Execution_Finished_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Failed_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Finished_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Prepared_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Skipped_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Suite_Finished_Subscriber;
+use Pest\Logging\Team_City\Subscriber\Test_Suite_Started_Subscriber;
+use Php_Unit\Event\Code\Test;
+use Php_Unit\Event\Event_Facade_Is_Sealed_Exception;
+use Php_Unit\Event\Facade;
+use Php_Unit\Event\Telemetry\Duration;
+use Php_Unit\Event\Telemetry\Hr_Time;
+use Php_Unit\Event\Telemetry\Info;
+use Php_Unit\Event\Telemetry\Snapshot;
+use Php_Unit\Event\Test\Considered_Risky;
+use Php_Unit\Event\Test\Errored;
+use Php_Unit\Event\Test\Failed;
+use Php_Unit\Event\Test\Finished;
+use Php_Unit\Event\Test\Prepared;
+use Php_Unit\Event\Test\Skipped;
+use Php_Unit\Event\Test_Runner\Execution_Finished;
+use Php_Unit\Event\Test_Suite\Finished as TestSuiteFinished;
+use Php_Unit\Event\Test_Suite\Started as TestSuiteStarted;
+use Php_Unit\Event\Unknown_Subscriber_Type_Exception;
+use Php_Unit\Test_Runner\Test_Result\Facade as TestResultFacade;
 use ReflectionClass;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Output\Console_Output;
+use Symfony\Component\Console\Output\Output_Interface;
 /**
  * @internal
  */
-final class TeamCityLogger
+final class Team_City_Logger
 {
     /**
      * The current time.
      */
-    private ?HRTime $time = null;
-
+    private ?Hr_Time $time = null;
     /**
      * Indicates if the summary test count has been printed.
      */
-    private bool $isSummaryTestCountPrinted = false;
-
+    private bool $is_summary_test_count_printed = false;
     /**
      * @var array<string, bool>
      */
-    private array $testEvents = [];
-
+    private array $test_events = [];
     /**
      * @throws EventFacadeIsSealedException
      * @throws UnknownSubscriberTypeException
      */
-    public function __construct(
-        private readonly OutputInterface $output,
-        private readonly Converter $converter,
-        private readonly ?int $flowId,
-        private readonly bool $withoutDuration,
-    ) {
-        $this->registerSubscribers();
-        $this->setFlowId();
-    }
-
-    public function testSuiteStarted(TestSuiteStarted $event): void
+    public function __construct(private readonly Output_Interface $output, private readonly Converter $converter, private readonly ?int $flow_id, private readonly bool $without_duration)
     {
-        $message = ServiceMessage::testSuiteStarted(
-            $this->converter->getTestSuiteName($event->testSuite()),
-            $this->converter->getTestSuiteLocation($event->testSuite())
-        );
-
+        $this->register_subscribers();
+        $this->set_flow_id();
+    }
+    public function test_suite_started(Test_Suite_Started $event): void
+    {
+        $message = Service_Message::test_suite_started($this->converter->get_test_suite_name($event->test_suite()), $this->converter->get_test_suite_location($event->test_suite()));
         $this->output($message);
-
-        if (! $this->isSummaryTestCountPrinted) {
-            $this->isSummaryTestCountPrinted = true;
-            $message = ServiceMessage::testSuiteCount(
-                $this->converter->getTestSuiteSize($event->testSuite())
-            );
-
+        if (!$this->is_summary_test_count_printed) {
+            $this->is_summary_test_count_printed = true;
+            $message = Service_Message::test_suite_count($this->converter->get_test_suite_size($event->test_suite()));
             $this->output($message);
         }
     }
-
-    public function testSuiteFinished(TestSuiteFinished $event): void
+    public function test_suite_finished(Test_Suite_Finished $event): void
     {
-        $message = ServiceMessage::testSuiteFinished(
-            $this->converter->getTestSuiteName($event->testSuite()),
-        );
-
+        $message = Service_Message::test_suite_finished($this->converter->get_test_suite_name($event->test_suite()));
         $this->output($message);
     }
-
-    public function testPrepared(Prepared $event): void
+    public function test_prepared(Prepared $event): void
     {
-        $message = ServiceMessage::testStarted(
-            $this->converter->getTestCaseMethodName($event->test()),
-            $this->converter->getTestCaseLocation($event->test()),
-        );
-
+        $message = Service_Message::test_started($this->converter->get_test_case_method_name($event->test()), $this->converter->get_test_case_location($event->test()));
         $this->output($message);
-
-        $this->time = $event->telemetryInfo()->time();
+        $this->time = $event->telemetry_info()->time();
     }
-
-    public function testMarkedIncomplete(): never
+    public function test_marked_incomplete(): never
     {
-        throw ShouldNotHappen::fromMessage('testMarkedIncomplete not implemented.');
+        throw Should_Not_Happen::from_message('testMarkedIncomplete not implemented.');
     }
-
-    public function testSkipped(Skipped $event): void
+    public function test_skipped(Skipped $event): void
     {
-        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
-            $message = ServiceMessage::testIgnored(
-                $this->converter->getTestCaseMethodName($event->test()),
-                'This test was ignored.'
-            );
-
+        $this->when_first_event_for_test($event->test(), function () use ($event): void {
+            $message = Service_Message::test_ignored($this->converter->get_test_case_method_name($event->test()), 'This test was ignored.');
             $this->output($message);
         });
     }
-
     /**
      * This will trigger in the following scenarios
      * - When an exception is thrown
      */
-    public function testErrored(Errored $event): void
+    public function test_errored(Errored $event): void
     {
-        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
-            $testName = $this->converter->getTestCaseMethodName($event->test());
-            $message = $this->converter->getExceptionMessage($event->throwable());
-            $details = $this->converter->getExceptionDetails($event->throwable());
-
-            $message = ServiceMessage::testFailed(
-                $testName,
-                $message,
-                $details,
-            );
-
+        $this->when_first_event_for_test($event->test(), function () use ($event): void {
+            $test_name = $this->converter->get_test_case_method_name($event->test());
+            $message = $this->converter->get_exception_message($event->throwable());
+            $details = $this->converter->get_exception_details($event->throwable());
+            $message = Service_Message::test_failed($test_name, $message, $details);
             $this->output($message);
         });
     }
-
     /**
      * This will trigger in the following scenarios
      * - When an assertion fails
      */
-    public function testFailed(Failed $event): void
+    public function test_failed(Failed $event): void
     {
-        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
-            $testName = $this->converter->getTestCaseMethodName($event->test());
-            $message = $this->converter->getExceptionMessage($event->throwable());
-            $details = $this->converter->getExceptionDetails($event->throwable());
-
-            if ($event->hasComparisonFailure()) {
-                $comparison = $event->comparisonFailure();
-                $message = ServiceMessage::comparisonFailure(
-                    $testName,
-                    $message,
-                    $details,
-                    $comparison->actual(),
-                    $comparison->expected()
-                );
+        $this->when_first_event_for_test($event->test(), function () use ($event): void {
+            $test_name = $this->converter->get_test_case_method_name($event->test());
+            $message = $this->converter->get_exception_message($event->throwable());
+            $details = $this->converter->get_exception_details($event->throwable());
+            if ($event->has_comparison_failure()) {
+                $comparison = $event->comparison_failure();
+                $message = Service_Message::comparison_failure($test_name, $message, $details, $comparison->actual(), $comparison->expected());
             } else {
-                $message = ServiceMessage::testFailed(
-                    $testName,
-                    $message,
-                    $details,
-                );
+                $message = Service_Message::test_failed($test_name, $message, $details);
             }
-
             $this->output($message);
         });
     }
-
     /**
      * This will trigger in the following scenarios
      * - When no assertions in a test
      */
-    public function testConsideredRisky(ConsideredRisky $event): void
+    public function test_considered_risky(Considered_Risky $event): void
     {
-        $this->whenFirstEventForTest($event->test(), function () use ($event): void {
-            $message = ServiceMessage::testIgnored(
-                $this->converter->getTestCaseMethodName($event->test()),
-                $event->message()
-            );
-
+        $this->when_first_event_for_test($event->test(), function () use ($event): void {
+            $message = Service_Message::test_ignored($this->converter->get_test_case_method_name($event->test()), $event->message());
             $this->output($message);
         });
     }
-
-    public function testFinished(Finished $event): void
+    public function test_finished(Finished $event): void
     {
-        if (! $this->time instanceof HRTime) {
-            throw ShouldNotHappen::fromMessage('Start time has not been set.');
+        if (!$this->time instanceof Hr_Time) {
+            throw Should_Not_Happen::from_message('Start time has not been set.');
         }
-
-        $testName = $this->converter->getTestCaseMethodName($event->test());
-        $duration = $event->telemetryInfo()->time()->duration($this->time)->asFloat();
-        if ($this->withoutDuration) {
+        $test_name = $this->converter->get_test_case_method_name($event->test());
+        $duration = $event->telemetry_info()->time()->duration($this->time)->as_float();
+        if ($this->without_duration) {
             $duration = 100;
         }
-
-        $message = ServiceMessage::testFinished(
-            $testName,
-            (int) ($duration * 1000)
-        );
-
+        $message = Service_Message::test_finished($test_name, (int) ($duration * 1000));
         $this->output($message);
     }
-
-    public function testExecutionFinished(ExecutionFinished $event): void
+    public function test_execution_finished(Execution_Finished $event): void
     {
-        $result = TestResultFacade::result();
-        $state = $this->converter->getStateFromResult($result);
-
-        assert($this->output instanceof ConsoleOutput);
+        $result = Test_Result_Facade::result();
+        $state = $this->converter->get_state_from_result($result);
+        assert($this->output instanceof Console_Output);
         $style = new Style($this->output);
-
-        $telemetry = $event->telemetryInfo();
-
-        if ($this->withoutDuration) {
+        $telemetry = $event->telemetry_info();
+        if ($this->without_duration) {
             $reflector = new ReflectionClass($telemetry);
-
-            $property = $reflector->getProperty('current');
-            $snapshot = $property->getValue($telemetry);
+            $property = $reflector->get_property('current');
+            $snapshot = $property->get_value($telemetry);
             assert($snapshot instanceof Snapshot);
-
-            $telemetry = new Info(
-                $snapshot,
-                Duration::fromSecondsAndNanoseconds(1, 0),
-                $telemetry->memoryUsageSinceStart(),
-                $telemetry->durationSincePrevious(),
-                $telemetry->memoryUsageSincePrevious(),
-            );
+            $telemetry = new Info($snapshot, Duration::from_seconds_and_nanoseconds(1, 0), $telemetry->memory_usage_since_start(), $telemetry->duration_since_previous(), $telemetry->memory_usage_since_previous());
         }
-
-        $style->writeRecap($state, $telemetry, $result);
+        $style->write_recap($state, $telemetry, $result);
     }
-
-    public function output(ServiceMessage $message): void
+    public function output(Service_Message $message): void
     {
-        $this->output->writeln("{$message->toString()}");
+        $this->output->writeln("{$message->to_string()}");
     }
-
     /**
      * @throws EventFacadeIsSealedException
      * @throws UnknownSubscriberTypeException
      */
-    private function registerSubscribers(): void
+    private function register_subscribers(): void
     {
-        $subscribers = [
-            new TestSuiteStartedSubscriber($this),
-            new TestSuiteFinishedSubscriber($this),
-            new TestPreparedSubscriber($this),
-            new TestFinishedSubscriber($this),
-            new TestErroredSubscriber($this),
-            new TestFailedSubscriber($this),
-            new TestSkippedSubscriber($this),
-            new TestConsideredRiskySubscriber($this),
-            new TestExecutionFinishedSubscriber($this),
-        ];
-
-        Facade::instance()->registerSubscribers(...$subscribers);
+        $subscribers = [new Test_Suite_Started_Subscriber($this), new Test_Suite_Finished_Subscriber($this), new Test_Prepared_Subscriber($this), new Test_Finished_Subscriber($this), new Test_Errored_Subscriber($this), new Test_Failed_Subscriber($this), new Test_Skipped_Subscriber($this), new Test_Considered_Risky_Subscriber($this), new Test_Execution_Finished_Subscriber($this)];
+        Facade::instance()->register_subscribers(...$subscribers);
     }
-
-    private function setFlowId(): void
+    private function set_flow_id(): void
     {
-        if ($this->flowId === null) {
+        if ($this->flow_id === null) {
             return;
         }
-
-        ServiceMessage::setFlowId($this->flowId);
+        Service_Message::set_flow_id($this->flow_id);
     }
-
-    private function whenFirstEventForTest(Test $test, callable $callback): void
+    private function when_first_event_for_test(Test $test, callable $callback): void
     {
-        $testIdentifier = $this->converter->getTestCaseLocation($test);
-
-        if (! isset($this->testEvents[$testIdentifier])) {
-            $this->testEvents[$testIdentifier] = true;
+        $test_identifier = $this->converter->get_test_case_location($test);
+        if (!isset($this->test_events[$test_identifier])) {
+            $this->test_events[$test_identifier] = true;
             $callback();
         }
     }

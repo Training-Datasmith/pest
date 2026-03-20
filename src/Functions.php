@@ -1,32 +1,30 @@
 <?php
 
-declare(strict_types=1);
-
-use Pest\Browser\Api\ArrayablePendingAwaitablePage;
-use Pest\Browser\Api\PendingAwaitablePage;
+declare (strict_types=1);
+use Pest\Browser\Api\Arrayable_Pending_Awaitable_Page;
+use Pest\Browser\Api\Pending_Awaitable_Page;
 use Pest\Concerns\Expectable;
 use Pest\Configuration;
-use Pest\Exceptions\AfterAllWithinDescribe;
-use Pest\Exceptions\BeforeAllWithinDescribe;
+use Pest\Exceptions\After_All_Within_Describe;
+use Pest\Exceptions\Before_All_Within_Describe;
 use Pest\Expectation;
-use Pest\Installers\PluginBrowser;
-use Pest\Mutate\Contracts\MutationTestRunner;
-use Pest\Mutate\Repositories\ConfigurationRepository;
-use Pest\PendingCalls\AfterEachCall;
-use Pest\PendingCalls\BeforeEachCall;
-use Pest\PendingCalls\DescribeCall;
-use Pest\PendingCalls\TestCall;
-use Pest\PendingCalls\UsesCall;
-use Pest\Repositories\DatasetsRepository;
+use Pest\Installers\Plugin_Browser;
+use Pest\Mutate\Contracts\Mutation_Test_Runner;
+use Pest\Mutate\Repositories\Configuration_Repository;
+use Pest\Pending_Calls\After_Each_Call;
+use Pest\Pending_Calls\Before_Each_Call;
+use Pest\Pending_Calls\Describe_Call;
+use Pest\Pending_Calls\Test_Call;
+use Pest\Pending_Calls\Uses_Call;
+use Pest\Repositories\Datasets_Repository;
 use Pest\Support\Backtrace;
 use Pest\Support\Container;
-use Pest\Support\DatasetInfo;
+use Pest\Support\Dataset_Info;
 use Pest\Support\Description;
-use Pest\Support\HigherOrderTapProxy;
-use Pest\TestSuite;
-use PHPUnit\Framework\TestCase;
-
-if (! function_exists('expect')) {
+use Pest\Support\Higher_Order_Tap_Proxy;
+use Pest\Test_Suite;
+use Php_Unit\Framework\Test_Case;
+if (!function_exists('expect')) {
     /**
      * Creates a new expectation.
      *
@@ -40,24 +38,20 @@ if (! function_exists('expect')) {
         return new Expectation($value);
     }
 }
-
-if (! function_exists('beforeAll')) {
+if (!function_exists('beforeAll')) {
     /**
      * Runs the given closure before all tests in the current file.
      */
-    function beforeAll(Closure $closure): void
+    function before_all(Closure $closure): void
     {
-        if (DescribeCall::describing() !== []) {
+        if (Describe_Call::describing() !== []) {
             $filename = Backtrace::file();
-
-            throw new BeforeAllWithinDescribe($filename);
+            throw new Before_All_Within_Describe($filename);
         }
-
-        TestSuite::getInstance()->beforeAll->set($closure);
+        Test_Suite::get_instance()->before_all->set($closure);
     }
 }
-
-if (! function_exists('beforeEach')) {
+if (!function_exists('beforeEach')) {
     /**
      * Runs the given closure before each test in the current file.
      *
@@ -65,15 +59,13 @@ if (! function_exists('beforeEach')) {
      *
      * @return HigherOrderTapProxy<Expectable|TestCall|TestCase>|Expectable|TestCall|TestCase|mixed
      */
-    function beforeEach(?Closure $closure = null): BeforeEachCall
+    function before_each(?Closure $closure = null): Before_Each_Call
     {
         $filename = Backtrace::file();
-
-        return new BeforeEachCall(TestSuite::getInstance(), $filename, $closure);
+        return new Before_Each_Call(Test_Suite::get_instance(), $filename, $closure);
     }
 }
-
-if (! function_exists('dataset')) {
+if (!function_exists('dataset')) {
     /**
      * Registers the given dataset.
      *
@@ -81,13 +73,11 @@ if (! function_exists('dataset')) {
      */
     function dataset(string $name, Closure|iterable $dataset): void
     {
-        $scope = DatasetInfo::scope(Backtrace::datasetsFile());
-
-        DatasetsRepository::set($name, $dataset, $scope);
+        $scope = Dataset_Info::scope(Backtrace::datasets_file());
+        Datasets_Repository::set($name, $dataset, $scope);
     }
 }
-
-if (! function_exists('describe')) {
+if (!function_exists('describe')) {
     /**
      * Adds the given closure as a group of tests. The first argument
      * is the group description; the second argument is a closure
@@ -95,30 +85,26 @@ if (! function_exists('describe')) {
      *
      * @return HigherOrderTapProxy<Expectable|TestCall|TestCase>|Expectable|TestCall|TestCase|mixed
      */
-    function describe(string $description, Closure $tests): DescribeCall
+    function describe(string $description, Closure $tests): Describe_Call
     {
-        $filename = Backtrace::testFile();
-
-        return new DescribeCall(TestSuite::getInstance(), $filename, new Description($description), $tests);
+        $filename = Backtrace::test_file();
+        return new Describe_Call(Test_Suite::get_instance(), $filename, new Description($description), $tests);
     }
 }
-
-if (! function_exists('uses')) {
+if (!function_exists('uses')) {
     /**
      * The uses function binds the given
      * arguments to test closures.
      *
      * @param  class-string  ...$classAndTraits
      */
-    function uses(string ...$classAndTraits): UsesCall
+    function uses(string ...$class_and_traits): Uses_Call
     {
         $filename = Backtrace::file();
-
-        return new UsesCall($filename, array_values($classAndTraits));
+        return new Uses_Call($filename, array_values($class_and_traits));
     }
 }
-
-if (! function_exists('pest')) {
+if (!function_exists('pest')) {
     /**
      * Creates a new Pest configuration instance.
      */
@@ -127,8 +113,7 @@ if (! function_exists('pest')) {
         return new Configuration(Backtrace::file());
     }
 }
-
-if (! function_exists('test')) {
+if (!function_exists('test')) {
     /**
      * Adds the given closure as a test. The first argument
      * is the test description; the second argument is
@@ -138,19 +123,16 @@ if (! function_exists('test')) {
      *
      * @return Expectable|TestCall|TestCase|mixed
      */
-    function test(?string $description = null, ?Closure $closure = null): HigherOrderTapProxy|TestCall
+    function test(?string $description = null, ?Closure $closure = null): Higher_Order_Tap_Proxy|Test_Call
     {
-        if ($description === null && TestSuite::getInstance()->test instanceof TestCase) {
-            return new HigherOrderTapProxy(TestSuite::getInstance()->test);
+        if ($description === null && Test_Suite::get_instance()->test instanceof Test_Case) {
+            return new Higher_Order_Tap_Proxy(Test_Suite::get_instance()->test);
         }
-
-        $filename = Backtrace::testFile();
-
-        return new TestCall(TestSuite::getInstance(), $filename, $description, $closure);
+        $filename = Backtrace::test_file();
+        return new Test_Call(Test_Suite::get_instance(), $filename, $description, $closure);
     }
 }
-
-if (! function_exists('it')) {
+if (!function_exists('it')) {
     /**
      * Adds the given closure as a test. The first argument
      * is the test description; the second argument is
@@ -160,34 +142,28 @@ if (! function_exists('it')) {
      *
      * @return Expectable|TestCall|TestCase|mixed
      */
-    function it(string $description, ?Closure $closure = null): TestCall
+    function it(string $description, ?Closure $closure = null): Test_Call
     {
         $description = sprintf('it %s', $description);
-
         /** @var TestCall $test */
         $test = test($description, $closure);
-
         return $test;
     }
 }
-
-if (! function_exists('todo')) {
+if (!function_exists('todo')) {
     /**
      * Creates a new test that is marked as "todo".
      *
      * @return Expectable|TestCall|TestCase|mixed
      */
-    function todo(string $description): TestCall
+    function todo(string $description): Test_Call
     {
         $test = test($description);
-
-        assert($test instanceof TestCall);
-
+        assert($test instanceof Test_Call);
         return $test->todo();
     }
 }
-
-if (! function_exists('afterEach')) {
+if (!function_exists('afterEach')) {
     /**
      * Runs the given closure after each test in the current file.
      *
@@ -195,60 +171,50 @@ if (! function_exists('afterEach')) {
      *
      * @return Expectable|HigherOrderTapProxy<Expectable|TestCall|TestCase>|TestCall|mixed
      */
-    function afterEach(?Closure $closure = null): AfterEachCall
+    function after_each(?Closure $closure = null): After_Each_Call
     {
         $filename = Backtrace::file();
-
-        return new AfterEachCall(TestSuite::getInstance(), $filename, $closure);
+        return new After_Each_Call(Test_Suite::get_instance(), $filename, $closure);
     }
 }
-
-if (! function_exists('afterAll')) {
+if (!function_exists('afterAll')) {
     /**
      * Runs the given closure after all tests in the current file.
      */
-    function afterAll(Closure $closure): void
+    function after_all(Closure $closure): void
     {
-        if (DescribeCall::describing() !== []) {
+        if (Describe_Call::describing() !== []) {
             $filename = Backtrace::file();
-
-            throw new AfterAllWithinDescribe($filename);
+            throw new After_All_Within_Describe($filename);
         }
-
-        TestSuite::getInstance()->afterAll->set($closure);
+        Test_Suite::get_instance()->after_all->set($closure);
     }
 }
-
-if (! function_exists('covers')) {
+if (!function_exists('covers')) {
     /**
      * Specifies which classes, or functions, a test case covers.
      *
      * @param  array<int, string>|string  $classesOrFunctions
      */
-    function covers(array|string ...$classesOrFunctions): void
+    function covers(array|string ...$classes_or_functions): void
     {
         $filename = Backtrace::file();
-
-        $beforeEachCall = (new BeforeEachCall(TestSuite::getInstance(), $filename));
-
-        $beforeEachCall->covers(...$classesOrFunctions);
-        $beforeEachCall->group('__pest_mutate_only');
-
+        $before_each_call = new Before_Each_Call(Test_Suite::get_instance(), $filename);
+        $before_each_call->covers(...$classes_or_functions);
+        $before_each_call->group('__pest_mutate_only');
         /** @var MutationTestRunner $runner */
-        $runner = Container::getInstance()->get(MutationTestRunner::class);
+        $runner = Container::get_instance()->get(Mutation_Test_Runner::class);
         /** @var ConfigurationRepository $configurationRepository */
-        $configurationRepository = Container::getInstance()->get(ConfigurationRepository::class);
-        $everything = $configurationRepository->cliConfiguration->toArray()['everything'] ?? false;
-        $classes = $configurationRepository->cliConfiguration->toArray()['classes'] ?? false;
-        $paths = $configurationRepository->cliConfiguration->toArray()['paths'] ?? false;
-
-        if ($runner->isEnabled() && ! $everything && ! is_array($classes) && ! is_array($paths)) {
-            $beforeEachCall->only('__pest_mutate_only');
+        $configuration_repository = Container::get_instance()->get(Configuration_Repository::class);
+        $everything = $configuration_repository->cli_configuration->to_array()['everything'] ?? false;
+        $classes = $configuration_repository->cli_configuration->to_array()['classes'] ?? false;
+        $paths = $configuration_repository->cli_configuration->to_array()['paths'] ?? false;
+        if ($runner->is_enabled() && !$everything && !is_array($classes) && !is_array($paths)) {
+            $before_each_call->only('__pest_mutate_only');
         }
     }
 }
-
-if (! function_exists('mutates')) {
+if (!function_exists('mutates')) {
     /**
      * Specifies which classes, enums, or traits a test case mutates.
      *
@@ -257,58 +223,42 @@ if (! function_exists('mutates')) {
     function mutates(array|string ...$targets): void
     {
         $filename = Backtrace::file();
-
-        $beforeEachCall = (new BeforeEachCall(TestSuite::getInstance(), $filename));
-        $beforeEachCall->group('__pest_mutate_only');
-
+        $before_each_call = new Before_Each_Call(Test_Suite::get_instance(), $filename);
+        $before_each_call->group('__pest_mutate_only');
         /** @var MutationTestRunner $runner */
-        $runner = Container::getInstance()->get(MutationTestRunner::class);
+        $runner = Container::get_instance()->get(Mutation_Test_Runner::class);
         /** @var ConfigurationRepository $configurationRepository */
-        $configurationRepository = Container::getInstance()->get(ConfigurationRepository::class);
-        $everything = $configurationRepository->cliConfiguration->toArray()['everything'] ?? false;
-        $classes = $configurationRepository->cliConfiguration->toArray()['classes'] ?? false;
-        $paths = $configurationRepository->cliConfiguration->toArray()['paths'] ?? false;
-
-        if ($runner->isEnabled() && ! $everything && ! is_array($classes) && ! is_array($paths)) {
-            $beforeEachCall->only('__pest_mutate_only');
+        $configuration_repository = Container::get_instance()->get(Configuration_Repository::class);
+        $everything = $configuration_repository->cli_configuration->to_array()['everything'] ?? false;
+        $classes = $configuration_repository->cli_configuration->to_array()['classes'] ?? false;
+        $paths = $configuration_repository->cli_configuration->to_array()['paths'] ?? false;
+        if ($runner->is_enabled() && !$everything && !is_array($classes) && !is_array($paths)) {
+            $before_each_call->only('__pest_mutate_only');
         }
-
         /** @var ConfigurationRepository $configurationRepository */
-        $configurationRepository = Container::getInstance()->get(ConfigurationRepository::class);
-        $paths = $configurationRepository->cliConfiguration->toArray()['paths'] ?? false;
-
-        if (! is_array($paths)) {
-            $configurationRepository->globalConfiguration('default')->class(...$targets); // @phpstan-ignore-line
+        $configuration_repository = Container::get_instance()->get(Configuration_Repository::class);
+        $paths = $configuration_repository->cli_configuration->to_array()['paths'] ?? false;
+        if (!is_array($paths)) {
+            $configuration_repository->global_configuration('default')->class(...$targets);
+            // @phpstan-ignore-line
         }
     }
 }
-
-if (! function_exists('fixture')) {
+if (!function_exists('fixture')) {
     /**
      * Returns the absolute path to a fixture file.
      */
     function fixture(string $file): string
     {
-        $file = implode(DIRECTORY_SEPARATOR, [
-            TestSuite::getInstance()->rootPath,
-            TestSuite::getInstance()->testPath,
-            'Fixtures',
-            str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file),
-        ]);
-
-        $fileRealPath = realpath($file);
-
-        if ($fileRealPath === false) {
-            throw new InvalidArgumentException(
-                'The fixture file ['.$file.'] does not exist.',
-            );
+        $file = implode(DIRECTORY_SEPARATOR, [Test_Suite::get_instance()->root_path, Test_Suite::get_instance()->test_path, 'Fixtures', str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file)]);
+        $file_real_path = realpath($file);
+        if ($file_real_path === false) {
+            throw new InvalidArgumentException('The fixture file [' . $file . '] does not exist.');
         }
-
-        return $fileRealPath;
+        return $file_real_path;
     }
 }
-
-if (! function_exists('visit')) {
+if (!function_exists('visit')) {
     /**
      * Browse to the given URL.
      *
@@ -318,14 +268,12 @@ if (! function_exists('visit')) {
      * @param  array<string, mixed>  $options
      * @return (TUrl is array<int, string> ? ArrayablePendingAwaitablePage : PendingAwaitablePage)
      */
-    function visit(array|string $url, array $options = []): ArrayablePendingAwaitablePage|PendingAwaitablePage
+    function visit(array|string $url, array $options = []): Arrayable_Pending_Awaitable_Page|Pending_Awaitable_Page
     {
-        if (! class_exists(Pest\Browser\Configuration::class)) {
-            PluginBrowser::install();
-
+        if (!class_exists(Pest\Browser\Configuration::class)) {
+            Plugin_Browser::install();
             exit(0);
         }
-
         // @phpstan-ignore-next-line
         return test()->visit($url, $options);
     }

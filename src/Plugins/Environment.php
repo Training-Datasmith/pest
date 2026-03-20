@@ -1,47 +1,39 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
-
+use Pest\Contracts\Plugins\Handles_Arguments;
 /**
  * @internal
  */
-final class Environment implements HandlesArguments
+final class Environment implements Handles_Arguments
 {
     /**
      * The continuous integration environment.
      */
     public const string CI = 'ci';
-
     /**
      * The local environment.
      */
     public const string LOCAL = 'local';
-
     /**
      * The current environment.
      */
     private static ?string $name = null;
-
     /**
      * {@inheritdoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
         foreach ($arguments as $index => $argument) {
             if ($argument === '--ci') {
                 unset($arguments[$index]);
-
                 self::$name = self::CI;
             }
         }
-
         return array_values($arguments);
     }
-
     /**
      * Gets the environment name.
      */
@@ -50,7 +42,6 @@ final class Environment implements HandlesArguments
         if (is_string($name)) {
             self::$name = $name;
         }
-
         return self::$name ?? self::LOCAL;
     }
 }

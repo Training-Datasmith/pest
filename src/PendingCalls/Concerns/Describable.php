@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Pest\PendingCalls\Concerns;
+declare (strict_types=1);
+namespace Pest\Pending_Calls\Concerns;
 
 use Pest\Support\Description;
-
 /**
  * @internal
  */
@@ -17,7 +15,6 @@ trait Describable
      * @var array<int, Description>
      */
     public array $__describing;
-
     /**
      * The describing of the test case.
      *

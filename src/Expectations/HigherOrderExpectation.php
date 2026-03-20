@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Expectations;
 
 use Closure;
 use Pest\Concerns\Retrievable;
 use Pest\Expectation;
-
 /**
  * @internal
  *
@@ -16,25 +14,21 @@ use Pest\Expectation;
  *
  * @mixin Expectation<TOriginalValue>
  */
-final class HigherOrderExpectation
+final class Higher_Order_Expectation
 {
     use Retrievable;
-
     /**
      * @var Expectation<TValue>|EachExpectation<TValue>
      */
-    private Expectation|EachExpectation $expectation;
-
+    private Expectation|Each_Expectation $expectation;
     /**
      * Indicates if the expectation is the opposite.
      */
     private bool $opposite = false;
-
     /**
      * Indicates if the expectation should reset the value.
      */
-    private bool $shouldReset = false;
-
+    private bool $should_reset = false;
     /**
      * Creates a new higher order expectation.
      *
@@ -45,7 +39,6 @@ final class HigherOrderExpectation
     {
         $this->expectation = $this->expect($value);
     }
-
     /**
      * Creates the opposite expectation for the value.
      *
@@ -53,11 +46,9 @@ final class HigherOrderExpectation
      */
     public function not(): self
     {
-        $this->opposite = ! $this->opposite;
-
+        $this->opposite = !$this->opposite;
         return $this;
     }
-
     /**
      * Creates a new Expectation.
      *
@@ -70,7 +61,6 @@ final class HigherOrderExpectation
     {
         return new Expectation($value);
     }
-
     /**
      * Creates a new expectation.
      *
@@ -83,7 +73,6 @@ final class HigherOrderExpectation
     {
         return $this->expect($value);
     }
-
     /**
      * Scope an expectation callback to the current value in
      * the HigherOrderExpectation chain.
@@ -94,10 +83,8 @@ final class HigherOrderExpectation
     public function scoped(Closure $expectation): self
     {
         $expectation->__invoke($this->expectation);
-
         return new self($this->original, $this->original->value);
     }
-
     /**
      * Creates a new expectation with the decoded JSON value.
      *
@@ -107,7 +94,6 @@ final class HigherOrderExpectation
     {
         return new self($this->original, $this->expectation->json()->value);
     }
-
     /**
      * Dynamically calls methods on the class with the given arguments.
      *
@@ -116,14 +102,12 @@ final class HigherOrderExpectation
      */
     public function __call(string $name, array $arguments): self
     {
-        if (! $this->expectationHasMethod($name)) {
+        if (!$this->expectation_has_method($name)) {
             /* @phpstan-ignore-next-line */
-            return new self($this->original, $this->getValue()->$name(...$arguments));
+            return new self($this->original, $this->get_value()->{$name}(...$arguments));
         }
-
-        return $this->performAssertion($name, $arguments);
+        return $this->perform_assertion($name, $arguments);
     }
-
     /**
      * Accesses properties in the value or in the expectation.
      *
@@ -134,56 +118,47 @@ final class HigherOrderExpectation
         if ($name === 'not') {
             return $this->not();
         }
-
-        if (! $this->expectationHasMethod($name)) {
+        if (!$this->expectation_has_method($name)) {
             /** @var array<string, mixed>|object $value */
-            $value = $this->getValue();
-
+            $value = $this->get_value();
             return new self($this->original, $this->retrieve($name, $value));
         }
-
-        return $this->performAssertion($name, []);
+        return $this->perform_assertion($name, []);
     }
-
     /**
      * Determines if the original expectation has the given method name.
      */
-    private function expectationHasMethod(string $name): bool
+    private function expectation_has_method(string $name): bool
     {
         if (method_exists($this->original, $name)) {
             return true;
         }
-        if ($this->original::hasMethod($name)) {
+        if ($this->original::has_method($name)) {
             return true;
         }
-
-        return $this->original::hasExtend($name);
+        return $this->original::has_extend($name);
     }
-
     /**
      * Retrieve the applicable value based on the current reset condition.
      *
      * @return TOriginalValue|TValue
      */
-    private function getValue(): mixed
+    private function get_value(): mixed
     {
-        return $this->shouldReset ? $this->original->value : $this->expectation->value;
+        return $this->should_reset ? $this->original->value : $this->expectation->value;
     }
-
     /**
      * Performs the given assertion with the current expectation.
      *
      * @param  array<int, mixed>  $arguments
      * @return self<TOriginalValue, TValue>
      */
-    private function performAssertion(string $name, array $arguments): self
+    private function perform_assertion(string $name, array $arguments): self
     {
         /* @phpstan-ignore-next-line */
         $this->expectation = ($this->opposite ? $this->expectation->not() : $this->expectation)->{$name}(...$arguments);
-
         $this->opposite = false;
-        $this->shouldReset = true;
-
+        $this->should_reset = true;
         return $this;
     }
 }

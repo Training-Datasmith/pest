@@ -1,34 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
+use Pest\Contracts\Plugins\Handles_Arguments;
 use Pest\Support\View;
-
 use function Pest\version;
-
 /**
  * @internal
  */
-final class Version implements HandlesArguments
+final class Version implements Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
-        if ($this->hasArgument('--version', $arguments)) {
-            View::render('version', [
-                'version' => version(),
-            ]);
-
+        if ($this->has_argument('--version', $arguments)) {
+            View::render('version', ['version' => version()]);
             exit(0);
         }
-
         return $arguments;
     }
 }

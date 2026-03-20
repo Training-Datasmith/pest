@@ -1,13 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Expectations;
 
 use function expect;
-
 use Pest\Expectation;
-
 /**
  * @internal
  *
@@ -15,13 +12,12 @@ use Pest\Expectation;
  *
  * @mixin Expectation<TValue>
  */
-final class EachExpectation
+final class Each_Expectation
 {
     /**
      * Indicates if the expectation is the opposite.
      */
     private bool $opposite = false;
-
     /**
      * Creates an expectation on each item of the iterable "value".
      *
@@ -30,7 +26,6 @@ final class EachExpectation
     public function __construct(private readonly Expectation $original)
     {
     }
-
     /**
      * Creates a new expectation.
      *
@@ -43,7 +38,6 @@ final class EachExpectation
     {
         return $this->original->and($value);
     }
-
     /**
      * Creates the opposite expectation for the value.
      *
@@ -52,10 +46,8 @@ final class EachExpectation
     public function not(): self
     {
         $this->opposite = true;
-
         return $this;
     }
-
     /**
      * Dynamically calls methods on the class with the given arguments on each item.
      *
@@ -66,14 +58,11 @@ final class EachExpectation
     {
         foreach ($this->original->value as $item) {
             /* @phpstan-ignore-next-line */
-            $this->opposite ? expect($item)->not()->$name(...$arguments) : expect($item)->$name(...$arguments);
+            $this->opposite ? expect($item)->not()->{$name}(...$arguments) : expect($item)->{$name}(...$arguments);
         }
-
         $this->opposite = false;
-
         return $this;
     }
-
     /**
      * Dynamically calls methods on the class without any arguments on each item.
      *
@@ -82,6 +71,6 @@ final class EachExpectation
     public function __get(string $name): self
     {
         /* @phpstan-ignore-next-line */
-        return $this->$name();
+        return $this->{$name}();
     }
 }

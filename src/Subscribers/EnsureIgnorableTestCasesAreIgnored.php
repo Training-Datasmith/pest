@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Subscribers;
 
-use PHPUnit\Event\TestRunner\Started;
-use PHPUnit\Event\TestRunner\StartedSubscriber;
-use PHPUnit\Event\TestRunner\WarningTriggered;
-use PHPUnit\TestRunner\TestResult\Collector;
-use PHPUnit\TestRunner\TestResult\Facade;
+use Php_Unit\Event\Test_Runner\Started;
+use Php_Unit\Event\Test_Runner\Started_Subscriber;
+use Php_Unit\Event\Test_Runner\Warning_Triggered;
+use Php_Unit\Test_Runner\Test_Result\Collector;
+use Php_Unit\Test_Runner\Test_Result\Facade;
 use ReflectionClass;
-
 /**
  * @internal
  */
-final class EnsureIgnorableTestCasesAreIgnored implements StartedSubscriber
+final class Ensure_Ignorable_Test_Cases_Are_Ignored implements Started_Subscriber
 {
     /**
      * Runs the subscriber.
@@ -22,19 +20,14 @@ final class EnsureIgnorableTestCasesAreIgnored implements StartedSubscriber
     public function notify(Started $event): void
     {
         $reflection = new ReflectionClass(Facade::class);
-        $property = $reflection->getProperty('collector');
-        $collector = $property->getValue();
-
+        $property = $reflection->get_property('collector');
+        $collector = $property->get_value();
         assert($collector instanceof Collector);
-
         $reflection = new ReflectionClass($collector);
-        $property = $reflection->getProperty('testRunnerTriggeredWarningEvents');
-
+        $property = $reflection->get_property('testRunnerTriggeredWarningEvents');
         /** @var array<int, WarningTriggered> $testRunnerTriggeredWarningEvents */
-        $testRunnerTriggeredWarningEvents = $property->getValue($collector);
-
-        $testRunnerTriggeredWarningEvents = array_values(array_filter($testRunnerTriggeredWarningEvents, fn (WarningTriggered $event): bool => str_contains($event->message(), 'No tests found in class') === false));
-
-        $property->setValue($collector, $testRunnerTriggeredWarningEvents);
+        $test_runner_triggered_warning_events = $property->get_value($collector);
+        $test_runner_triggered_warning_events = array_values(array_filter($test_runner_triggered_warning_events, fn(Warning_Triggered $event): bool => str_contains($event->message(), 'No tests found in class') === false));
+        $property->set_value($collector, $test_runner_triggered_warning_events);
     }
 }

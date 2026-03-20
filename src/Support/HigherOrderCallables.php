@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
 use Closure;
 use Pest\Expectation;
-
 /**
  * @internal
  */
-final readonly class HigherOrderCallables
+final readonly class Higher_Order_Callables
 {
     /**
      * Creates a new Higher Order Callables instances.
@@ -19,7 +17,6 @@ final readonly class HigherOrderCallables
     {
         // ..
     }
-
     /**
      * @template TValue
      *
@@ -31,11 +28,9 @@ final readonly class HigherOrderCallables
     public function expect(mixed $value): Expectation
     {
         /** @var TValue $value */
-        $value = $value instanceof Closure ? Reflection::bindCallableWithData($value) : $value;
-
+        $value = $value instanceof Closure ? Reflection::bind_callable_with_data($value) : $value;
         return new Expectation($value);
     }
-
     /**
      * @template TValue
      *
@@ -49,14 +44,12 @@ final readonly class HigherOrderCallables
         // @phpstan-ignore-next-line
         return $this->expect($value);
     }
-
     /**
      * Execute the given callable after the test has executed the setup method.
      */
     public function defer(callable $callable): object
     {
-        Reflection::bindCallableWithData($callable);
-
+        Reflection::bind_callable_with_data($callable);
         return $this->target;
     }
 }

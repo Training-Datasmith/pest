@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins\Actions;
 
 use Pest\Contracts\Plugins;
 use Pest\Plugin\Loader;
-
 /**
  * @internal
  */
-final class CallsHandleArguments
+final class Calls_Handle_Arguments
 {
     /**
      * Executes the Plugin action.
@@ -22,13 +20,11 @@ final class CallsHandleArguments
      */
     public static function execute(array $argv): array
     {
-        $plugins = Loader::getPlugins(Plugins\HandlesArguments::class);
-
+        $plugins = Loader::get_plugins(Plugins\Handles_Arguments::class);
         /** @var Plugins\HandlesArguments $plugin */
         foreach ($plugins as $plugin) {
-            $argv = $plugin->handleArguments($argv);
+            $argv = $plugin->handle_arguments($argv);
         }
-
         return $argv;
     }
 }

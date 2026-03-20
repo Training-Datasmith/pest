@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest;
 
 final class Plugin
@@ -14,7 +13,6 @@ final class Plugin
      * @internal
      */
     public static array $callables = [];
-
     /**
      * Lazy loads an `uses` call on the context of plugins.
      *
@@ -23,7 +21,7 @@ final class Plugin
     public static function uses(string ...$traits): void
     {
         self::$callables[] = function () use ($traits): void {
-            uses(...$traits)->in(TestSuite::getInstance()->rootPath);
+            uses(...$traits)->in(Test_Suite::get_instance()->root_path);
         };
     }
 }

@@ -1,45 +1,41 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Concerns\Logging;
 
 /**
  * @internal
  */
-trait WritesToConsole
+trait Writes_To_Console
 {
     /**
      * Writes the given success message to the console.
      */
-    private function writeSuccess(string $message): void
+    private function write_success(string $message): void
     {
-        $this->writePestTestOutput($message, 'fg-green, bold', '✓');
+        $this->write_pest_test_output($message, 'fg-green, bold', '✓');
     }
-
     /**
      * Writes the given error message to the console.
      */
-    private function writeError(string $message): void
+    private function write_error(string $message): void
     {
-        $this->writePestTestOutput($message, 'fg-red, bold', '⨯');
+        $this->write_pest_test_output($message, 'fg-red, bold', '⨯');
     }
-
     /**
      * Writes the given warning message to the console.
      */
-    private function writeWarning(string $message): void
+    private function write_warning(string $message): void
     {
-        $this->writePestTestOutput($message, 'fg-yellow, bold', '-');
+        $this->write_pest_test_output($message, 'fg-yellow, bold', '-');
     }
-
     /**
      * Writes the give message to the console.
      */
-    private function writePestTestOutput(string $message, string $color, string $symbol): void
+    private function write_pest_test_output(string $message, string $color, string $symbol): void
     {
-        $this->writeWithColor($color, "$symbol ", false);
+        $this->write_with_color($color, "{$symbol} ", false);
         $this->write($message);
-        $this->writeNewLine();
+        $this->write_new_line();
     }
 }

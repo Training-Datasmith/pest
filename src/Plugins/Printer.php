@@ -1,31 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
-
+use Pest\Contracts\Plugins\Handles_Arguments;
 /**
  * @internal
  */
-final class Printer implements HandlesArguments
+final class Printer implements Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
-        if (! array_key_exists('COLLISION_PRINTER', $_SERVER)) {
+        if (!array_key_exists('COLLISION_PRINTER', $_SERVER)) {
             return $arguments;
         }
-
         if (in_array('--no-output', $arguments, true)) {
             return $arguments;
         }
-
-        return $this->pushArgument('--no-output', $arguments);
+        return $this->push_argument('--no-output', $arguments);
     }
 }

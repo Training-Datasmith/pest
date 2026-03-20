@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\TestSuite\Started;
-use PHPUnit\Event\TestSuite\StartedSubscriber;
-
+use Php_Unit\Event\Test_Suite\Started;
+use Php_Unit\Event\Test_Suite\Started_Subscriber;
 /**
  * @internal
  */
-final class TestSuiteStartedSubscriber extends Subscriber implements StartedSubscriber
+final class Test_Suite_Started_Subscriber extends Subscriber implements Started_Subscriber
 {
     public function notify(Started $event): void
     {
-        $this->logger()->testSuiteStarted($event);
+        $this->logger()->test_suite_started($event);
     }
 }

@@ -1,28 +1,26 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Logging;
 
-use NunoMaduro\Collision\Adapters\Phpunit\State;
-use Pest\Exceptions\ShouldNotHappen;
-use Pest\Support\StateGenerator;
+use Nuno_Maduro\Collision\Adapters\Phpunit\State;
+use Pest\Exceptions\Should_Not_Happen;
+use Pest\Support\State_Generator;
 use Pest\Support\Str;
-use PHPUnit\Event\Code\Test;
-use PHPUnit\Event\Code\TestMethod;
-use PHPUnit\Event\Code\Throwable;
-use PHPUnit\Event\Test\AfterLastTestMethodErrored;
-use PHPUnit\Event\Test\BeforeFirstTestMethodErrored;
-use PHPUnit\Event\Test\ConsideredRisky;
-use PHPUnit\Event\Test\Errored;
-use PHPUnit\Event\Test\Failed;
-use PHPUnit\Event\Test\MarkedIncomplete;
-use PHPUnit\Event\Test\Skipped;
-use PHPUnit\Event\TestSuite\TestSuite;
-use PHPUnit\Event\TestSuite\TestSuiteForTestMethodWithDataProvider;
-use PHPUnit\Framework\Exception as FrameworkException;
-use PHPUnit\TestRunner\TestResult\TestResult as PhpUnitTestResult;
-
+use Php_Unit\Event\Code\Test;
+use Php_Unit\Event\Code\Test_Method;
+use Php_Unit\Event\Code\Throwable;
+use Php_Unit\Event\Test\After_Last_Test_Method_Errored;
+use Php_Unit\Event\Test\Before_First_Test_Method_Errored;
+use Php_Unit\Event\Test\Considered_Risky;
+use Php_Unit\Event\Test\Errored;
+use Php_Unit\Event\Test\Failed;
+use Php_Unit\Event\Test\Marked_Incomplete;
+use Php_Unit\Event\Test\Skipped;
+use Php_Unit\Event\Test_Suite\Test_Suite;
+use Php_Unit\Event\Test_Suite\Test_Suite_For_Test_Method_With_Data_Provider;
+use Php_Unit\Framework\Exception as FrameworkException;
+use Php_Unit\Test_Runner\Test_Result\Test_Result as PhpUnitTestResult;
 /**
  * @internal
  */
@@ -32,244 +30,176 @@ final readonly class Converter
      * The prefix for the test suite name.
      */
     private const string PREFIX = 'P\\';
-
     /**
      *  The state generator.
      */
-    private StateGenerator $stateGenerator;
-
+    private State_Generator $state_generator;
     /**
      * Creates a new instance of the Converter.
      */
-    public function __construct(
-        private string $rootPath,
-    ) {
-        $this->stateGenerator = new StateGenerator();
+    public function __construct(private string $root_path)
+    {
+        $this->state_generator = new State_Generator();
     }
-
     /**
      * Gets the test case method name.
      */
-    public function getTestCaseMethodName(Test $test): string
+    public function get_test_case_method_name(Test $test): string
     {
-        if (! $test instanceof TestMethod) {
-            throw ShouldNotHappen::fromMessage('Not an instance of TestMethod');
+        if (!$test instanceof Test_Method) {
+            throw Should_Not_Happen::from_message('Not an instance of TestMethod');
         }
-
-        return $test->testDox()->prettifiedMethodName();
+        return $test->test_dox()->prettified_method_name();
     }
-
     /**
      * Gets the test case location.
      */
-    public function getTestCaseLocation(Test $test): string
+    public function get_test_case_location(Test $test): string
     {
-        if (! $test instanceof TestMethod) {
-            throw ShouldNotHappen::fromMessage('Not an instance of TestMethod');
+        if (!$test instanceof Test_Method) {
+            throw Should_Not_Happen::from_message('Not an instance of TestMethod');
         }
-
-        $path = $test->testDox()->prettifiedClassName();
-        $relativePath = $this->toRelativePath($path);
-
+        $path = $test->test_dox()->prettified_class_name();
+        $relative_path = $this->to_relative_path($path);
         // TODO: Get the description without the dataset.
-        $description = $test->testDox()->prettifiedMethodName();
-
-        return "$relativePath::$description";
+        $description = $test->test_dox()->prettified_method_name();
+        return "{$relative_path}::{$description}";
     }
-
     /**
      * Gets the exception message.
      */
-    public function getExceptionMessage(Throwable $throwable): string
+    public function get_exception_message(Throwable $throwable): string
     {
-        if (is_a($throwable->className(), FrameworkException::class, true)) {
+        if (is_a($throwable->class_name(), Framework_Exception::class, true)) {
             return $throwable->message();
         }
-
-        $buffer = $throwable->className();
-        $throwableMessage = $throwable->message();
-
-        if ($throwableMessage !== '') {
-            $buffer .= ": $throwableMessage";
+        $buffer = $throwable->class_name();
+        $throwable_message = $throwable->message();
+        if ($throwable_message !== '') {
+            $buffer .= ": {$throwable_message}";
         }
-
         return $buffer;
     }
-
     /**
      * Gets the exception details.
      */
-    public function getExceptionDetails(Throwable $throwable): string
+    public function get_exception_details(Throwable $throwable): string
     {
-        $buffer = $this->getStackTrace($throwable);
-
-        while ($throwable->hasPrevious()) {
+        $buffer = $this->get_stack_trace($throwable);
+        while ($throwable->has_previous()) {
             $throwable = $throwable->previous();
-
-            $buffer .= sprintf(
-                "\nCaused by\n%s\n%s",
-                $throwable->description(),
-                $this->getStackTrace($throwable)
-            );
+            $buffer .= sprintf("\nCaused by\n%s\n%s", $throwable->description(), $this->get_stack_trace($throwable));
         }
-
         return $buffer;
     }
-
     /**
      * Gets the stack trace.
      */
-    public function getStackTrace(Throwable $throwable): string
+    public function get_stack_trace(Throwable $throwable): string
     {
-        $stackTrace = $throwable->stackTrace();
-
+        $stack_trace = $throwable->stack_trace();
         // Split stacktrace per frame.
-        $frames = explode("\n", $stackTrace);
-
+        $frames = explode("\n", $stack_trace);
         // Remove empty lines
         $frames = array_filter($frames);
-
         // clean the paths of each frame.
-        $frames = array_map(
-            $this->toRelativePath(...),
-            $frames
-        );
-
+        $frames = array_map($this->to_relative_path(...), $frames);
         // Format stacktrace as `at <path>`
-        $frames = array_map(
-            fn (string $frame): string => "at $frame",
-            $frames
-        );
-
+        $frames = array_map(fn(string $frame): string => "at {$frame}", $frames);
         return implode("\n", $frames);
     }
-
     /**
      * Gets the test suite name.
      */
-    public function getTestSuiteName(TestSuite $testSuite): string
+    public function get_test_suite_name(Test_Suite $test_suite): string
     {
-        if ($testSuite instanceof TestSuiteForTestMethodWithDataProvider) {
-            $firstTest = $this->getFirstTest($testSuite);
-            if ($firstTest instanceof TestMethod) {
-                return $this->getTestMethodNameWithoutDatasetSuffix($firstTest);
+        if ($test_suite instanceof Test_Suite_For_Test_Method_With_Data_Provider) {
+            $first_test = $this->get_first_test($test_suite);
+            if ($first_test instanceof Test_Method) {
+                return $this->get_test_method_name_without_dataset_suffix($first_test);
             }
         }
-
-        $name = $testSuite->name();
-
-        if (! str_starts_with($name, self::PREFIX)) {
+        $name = $test_suite->name();
+        if (!str_starts_with($name, self::PREFIX)) {
             return $name;
         }
-
         return Str::after($name, self::PREFIX);
     }
-
     /**
      * Gets the trimmed test class name.
      */
-    public function getTrimmedTestClassName(TestMethod $test): string
+    public function get_trimmed_test_class_name(Test_Method $test): string
     {
-        return Str::after($test->className(), self::PREFIX);
+        return Str::after($test->class_name(), self::PREFIX);
     }
-
     /**
      * Gets the test suite location.
      */
-    public function getTestSuiteLocation(TestSuite $testSuite): ?string
+    public function get_test_suite_location(Test_Suite $test_suite): ?string
     {
-        $firstTest = $this->getFirstTest($testSuite);
-        if (! $firstTest instanceof TestMethod) {
+        $first_test = $this->get_first_test($test_suite);
+        if (!$first_test instanceof Test_Method) {
             return null;
         }
-        $path = $firstTest->testDox()->prettifiedClassName();
-        $classRelativePath = $this->toRelativePath($path);
-
-        if ($testSuite instanceof TestSuiteForTestMethodWithDataProvider) {
-            $methodName = $this->getTestMethodNameWithoutDatasetSuffix($firstTest);
-
-            return "$classRelativePath::$methodName";
+        $path = $first_test->test_dox()->prettified_class_name();
+        $class_relative_path = $this->to_relative_path($path);
+        if ($test_suite instanceof Test_Suite_For_Test_Method_With_Data_Provider) {
+            $method_name = $this->get_test_method_name_without_dataset_suffix($first_test);
+            return "{$class_relative_path}::{$method_name}";
         }
-
-        return $classRelativePath;
+        return $class_relative_path;
     }
-
     /**
      * Gets the prettified test method name without dataset-related suffix.
      */
-    private function getTestMethodNameWithoutDatasetSuffix(TestMethod $testMethod): string
+    private function get_test_method_name_without_dataset_suffix(Test_Method $test_method): string
     {
-        return Str::beforeLast($testMethod->testDox()->prettifiedMethodName(), ' with data set ');
+        return Str::before_last($test_method->test_dox()->prettified_method_name(), ' with data set ');
     }
-
     /**
      * Gets the first test from the test suite.
      */
-    private function getFirstTest(TestSuite $testSuite): ?TestMethod
+    private function get_first_test(Test_Suite $test_suite): ?Test_Method
     {
-        $tests = $testSuite->tests()->asArray();
-
+        $tests = $test_suite->tests()->as_array();
         // TODO: figure out how to get the file path without a test being there.
         if ($tests === []) {
             return null;
         }
-
-        $firstTest = $tests[0];
-        if (! $firstTest instanceof TestMethod) {
-            throw ShouldNotHappen::fromMessage('Not an instance of TestMethod');
+        $first_test = $tests[0];
+        if (!$first_test instanceof Test_Method) {
+            throw Should_Not_Happen::from_message('Not an instance of TestMethod');
         }
-
-        return $firstTest;
+        return $first_test;
     }
-
     /**
      * Gets the test suite size.
      */
-    public function getTestSuiteSize(TestSuite $testSuite): int
+    public function get_test_suite_size(Test_Suite $test_suite): int
     {
-        return $testSuite->count();
+        return $test_suite->count();
     }
-
     /**
      * Transforms the given path in relative path.
      */
-    private function toRelativePath(string $path): string
+    private function to_relative_path(string $path): string
     {
         // Remove cwd from the path.
-        return str_replace("$this->rootPath".DIRECTORY_SEPARATOR, '', $path);
+        return str_replace("{$this->root_path}" . DIRECTORY_SEPARATOR, '', $path);
     }
-
     /**
      * Get the test result.
      */
-    public function getStateFromResult(PhpUnitTestResult $result): State
+    public function get_state_from_result(Php_Unit_Test_Result $result): State
     {
-        $events = [
-            ...$result->testErroredEvents(),
-            ...$result->testFailedEvents(),
-            ...$result->testSkippedEvents(),
-            ...array_merge(...array_values($result->testConsideredRiskyEvents())),
-            ...$result->testMarkedIncompleteEvents(),
-        ];
-
-        $numberOfNotPassedTests = count(
-            array_unique(
-                array_map(
-                    function (AfterLastTestMethodErrored|BeforeFirstTestMethodErrored|Errored|Failed|Skipped|ConsideredRisky|MarkedIncomplete $event): string {
-                        if ($event instanceof BeforeFirstTestMethodErrored
-                            || $event instanceof AfterLastTestMethodErrored) {
-                            return $event->testClassName();
-                        }
-
-                        return $this->getTestCaseLocation($event->test());
-                    },
-                    $events
-                )
-            )
-        );
-
-        $numberOfPassedTests = $result->numberOfTestsRun() - $numberOfNotPassedTests;
-
-        return $this->stateGenerator->fromPhpUnitTestResult($numberOfPassedTests, $result);
+        $events = [...$result->test_errored_events(), ...$result->test_failed_events(), ...$result->test_skipped_events(), ...array_merge(...array_values($result->test_considered_risky_events())), ...$result->test_marked_incomplete_events()];
+        $number_of_not_passed_tests = count(array_unique(array_map(function (After_Last_Test_Method_Errored|Before_First_Test_Method_Errored|Errored|Failed|Skipped|Considered_Risky|Marked_Incomplete $event): string {
+            if ($event instanceof Before_First_Test_Method_Errored || $event instanceof After_Last_Test_Method_Errored) {
+                return $event->test_class_name();
+            }
+            return $this->get_test_case_location($event->test());
+        }, $events)));
+        $number_of_passed_tests = $result->number_of_tests_run() - $number_of_not_passed_tests;
+        return $this->state_generator->from_php_unit_test_result($number_of_passed_tests, $result);
     }
 }

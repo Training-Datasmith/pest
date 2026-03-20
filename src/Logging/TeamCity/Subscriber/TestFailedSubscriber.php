@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\Test\Failed;
-use PHPUnit\Event\Test\FailedSubscriber;
-
+use Php_Unit\Event\Test\Failed;
+use Php_Unit\Event\Test\Failed_Subscriber;
 /**
  * @internal
  */
-final class TestFailedSubscriber extends Subscriber implements FailedSubscriber
+final class Test_Failed_Subscriber extends Subscriber implements Failed_Subscriber
 {
     public function notify(Failed $event): void
     {
-        $this->logger()->testFailed($event);
+        $this->logger()->test_failed($event);
     }
 }

@@ -1,28 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Subscribers;
 
-use Pest\KernelDump;
+use Pest\Kernel_Dump;
 use Pest\Support\Container;
-use PHPUnit\Event\TestRunner\Started;
-use PHPUnit\Event\TestRunner\StartedSubscriber;
-
+use Php_Unit\Event\Test_Runner\Started;
+use Php_Unit\Event\Test_Runner\Started_Subscriber;
 /**
  * @internal
  */
-final class EnsureKernelDumpIsFlushed implements StartedSubscriber
+final class Ensure_Kernel_Dump_Is_Flushed implements Started_Subscriber
 {
     /**
      * Runs the subscriber.
      */
     public function notify(Started $event): void
     {
-        $kernelDump = Container::getInstance()->get(KernelDump::class);
-
-        assert($kernelDump instanceof KernelDump);
-
-        $kernelDump->disable();
+        $kernel_dump = Container::get_instance()->get(Kernel_Dump::class);
+        assert($kernel_dump instanceof Kernel_Dump);
+        $kernel_dump->disable();
     }
 }

@@ -1,23 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
 use Closure;
 use InvalidArgumentException;
-use Pest\Exceptions\ShouldNotHappen;
-use Pest\TestSuite;
-use PHPUnit\Framework\TestCase;
+use Pest\Exceptions\Should_Not_Happen;
+use Pest\Test_Suite;
+use Php_Unit\Framework\Test_Case;
 use ReflectionClass;
-use ReflectionException;
+use Reflection_Exception;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
-
 /**
  * @internal
  */
@@ -30,91 +28,74 @@ final class Reflection
      */
     public static function call(object $object, string $method, array $args = []): mixed
     {
-        $reflectionClass = new ReflectionClass($object);
-
+        $reflection_class = new ReflectionClass($object);
         try {
-            $reflectionMethod = $reflectionClass->getMethod($method);
-
-            return $reflectionMethod->invoke($object, ...$args);
-        } catch (ReflectionException $exception) {
+            $reflection_method = $reflection_class->get_method($method);
+            return $reflection_method->invoke($object, ...$args);
+        } catch (Reflection_Exception $exception) {
             if (method_exists($object, '__call')) {
                 return $object->__call($method, $args);
             }
-
             if (is_callable($method)) {
-                return self::bindCallable($method, $args);
+                return self::bind_callable($method, $args);
             }
-
             throw $exception;
         }
     }
-
     /**
      * Bind a callable to the TestCase and return the result.
      *
      * @param  array<int, mixed>  $args
      */
-    public static function bindCallable(callable $callable, array $args = []): mixed
+    public static function bind_callable(callable $callable, array $args = []): mixed
     {
-        return Closure::fromCallable($callable)->bindTo(TestSuite::getInstance()->test)(...$args);
+        return Closure::from_callable($callable)->bind_to(Test_Suite::get_instance()->test)(...$args);
     }
-
     /**
      * Bind a callable to the TestCase and return the result,
      * passing in the current dataset values as arguments.
      */
-    public static function bindCallableWithData(callable $callable): mixed
+    public static function bind_callable_with_data(callable $callable): mixed
     {
-        $test = TestSuite::getInstance()->test;
-
-        if (! $test instanceof TestCase) {
-            return self::bindCallable($callable);
+        $test = Test_Suite::get_instance()->test;
+        if (!$test instanceof Test_Case) {
+            return self::bind_callable($callable);
         }
-
-        foreach ($test->providedData() as $value) {
+        foreach ($test->provided_data() as $value) {
             if ($value instanceof Closure) {
                 throw new InvalidArgumentException('Bound datasets are not supported while doing high order testing.');
             }
         }
-
-        return Closure::fromCallable($callable)->bindTo($test)(...$test->providedData());
+        return Closure::from_callable($callable)->bind_to($test)(...$test->provided_data());
     }
-
     /**
      * Infers the file name from the given closure.
      */
-    public static function getFileNameFromClosure(Closure $closure): string
+    public static function get_file_name_from_closure(Closure $closure): string
     {
-        $reflectionClosure = new ReflectionFunction($closure);
-
-        return (string) $reflectionClosure->getFileName();
+        $reflection_closure = new ReflectionFunction($closure);
+        return (string) $reflection_closure->get_file_name();
     }
-
     /**
      * Gets the property value from of the given object.
      */
-    public static function getPropertyValue(object $object, string $property): mixed
+    public static function get_property_value(object $object, string $property): mixed
     {
-        $reflectionClass = new ReflectionClass($object);
-
-        $reflectionProperty = null;
-
-        while (! $reflectionProperty instanceof ReflectionProperty) {
+        $reflection_class = new ReflectionClass($object);
+        $reflection_property = null;
+        while (!$reflection_property instanceof ReflectionProperty) {
             try {
                 /* @var ReflectionProperty $reflectionProperty */
-                $reflectionProperty = $reflectionClass->getProperty($property);
-            } catch (ReflectionException $reflectionException) {
-                $reflectionClass = $reflectionClass->getParentClass();
-
-                if (! $reflectionClass instanceof ReflectionClass) {
-                    throw new ShouldNotHappen($reflectionException);
+                $reflection_property = $reflection_class->get_property($property);
+            } catch (Reflection_Exception $reflection_exception) {
+                $reflection_class = $reflection_class->get_parent_class();
+                if (!$reflection_class instanceof ReflectionClass) {
+                    throw new Should_Not_Happen($reflection_exception);
                 }
             }
         }
-
-        return $reflectionProperty->getValue($object);
+        return $reflection_property->get_value($object);
     }
-
     /**
      * Sets the property value of the given object.
      *
@@ -122,94 +103,77 @@ final class Reflection
      *
      * @param  TValue  $object
      */
-    public static function setPropertyValue(object $object, string $property, mixed $value): void
+    public static function set_property_value(object $object, string $property, mixed $value): void
     {
         /** @var ReflectionClass<TValue> $reflectionClass */
-        $reflectionClass = new ReflectionClass($object);
-
-        $reflectionProperty = null;
-
-        while (! $reflectionProperty instanceof ReflectionProperty) {
+        $reflection_class = new ReflectionClass($object);
+        $reflection_property = null;
+        while (!$reflection_property instanceof ReflectionProperty) {
             try {
                 /* @var ReflectionProperty $reflectionProperty */
-                $reflectionProperty = $reflectionClass->getProperty($property);
-            } catch (ReflectionException $reflectionException) {
-                $reflectionClass = $reflectionClass->getParentClass();
-
-                if (! $reflectionClass instanceof ReflectionClass) {
-                    throw new ShouldNotHappen($reflectionException);
+                $reflection_property = $reflection_class->get_property($property);
+            } catch (Reflection_Exception $reflection_exception) {
+                $reflection_class = $reflection_class->get_parent_class();
+                if (!$reflection_class instanceof ReflectionClass) {
+                    throw new Should_Not_Happen($reflection_exception);
                 }
             }
         }
-        $reflectionProperty->setValue($object, $value);
+        $reflection_property->set_value($object, $value);
     }
-
     /**
      * Get the class name of the given parameter's type, if possible.
      *
      * @see https://github.com/laravel/framework/blob/v6.18.25/src/Illuminate/Support/Reflector.php
      */
-    public static function getParameterClassName(ReflectionParameter $parameter): ?string
+    public static function get_parameter_class_name(ReflectionParameter $parameter): ?string
     {
-        $type = $parameter->getType();
-        if (! $type instanceof ReflectionNamedType) {
+        $type = $parameter->get_type();
+        if (!$type instanceof ReflectionNamedType) {
             return null;
         }
-        if ($type->isBuiltin()) {
+        if ($type->is_builtin()) {
             return null;
         }
-
-        $name = $type->getName();
-
-        if (($class = $parameter->getDeclaringClass()) instanceof ReflectionClass) {
+        $name = $type->get_name();
+        if (($class = $parameter->get_declaring_class()) instanceof ReflectionClass) {
             if ($name === 'self') {
-                return $class->getName();
+                return $class->get_name();
             }
-
-            if ($name === 'parent' && ($parent = $class->getParentClass()) instanceof ReflectionClass) {
-                return $parent->getName();
+            if ($name === 'parent' && ($parent = $class->get_parent_class()) instanceof ReflectionClass) {
+                return $parent->get_name();
             }
         }
-
         return $name;
     }
-
     /**
      * Receive a map of function argument names to their types.
      *
      * @return array<string, string>
      */
-    public static function getFunctionArguments(Closure $function): array
+    public static function get_function_arguments(Closure $function): array
     {
-        $parameters = (new ReflectionFunction($function))->getParameters();
+        $parameters = (new ReflectionFunction($function))->get_parameters();
         $arguments = [];
-
         foreach ($parameters as $parameter) {
             /** @var ReflectionNamedType|ReflectionUnionType|null $types */
-            $types = ($parameter->hasType()) ? $parameter->getType() : null;
-
+            $types = $parameter->has_type() ? $parameter->get_type() : null;
             if (is_null($types)) {
-                $arguments[$parameter->getName()] = 'mixed';
-
+                $arguments[$parameter->get_name()] = 'mixed';
                 continue;
             }
-
-            $arguments[$parameter->getName()] = implode('|', array_map(
-                static fn (ReflectionNamedType $type): string => $type->getName(), // @phpstan-ignore-line
-                ($types instanceof ReflectionNamedType)
-                    ? [$types] // NOTE: normalize as list of to handle unions
-                    : $types->getTypes(),
+            $arguments[$parameter->get_name()] = implode('|', array_map(
+                static fn(ReflectionNamedType $type): string => $type->get_name(),
+                // @phpstan-ignore-line
+                $types instanceof ReflectionNamedType ? [$types] : $types->get_types()
             ));
         }
-
         return $arguments;
     }
-
-    public static function getFunctionVariable(Closure $function, string $key): mixed
+    public static function get_function_variable(Closure $function, string $key): mixed
     {
-        return (new ReflectionFunction($function))->getStaticVariables()[$key] ?? null;
+        return (new ReflectionFunction($function))->get_static_variables()[$key] ?? null;
     }
-
     /**
      * Get the properties from the given reflection class.
      *
@@ -218,34 +182,16 @@ final class Reflection
      * @param  ReflectionClass<object>  $reflectionClass
      * @return array<int, ReflectionProperty>
      */
-    public static function getPropertiesFromReflectionClass(ReflectionClass $reflectionClass): array
+    public static function get_properties_from_reflection_class(ReflectionClass $reflection_class): array
     {
-        $getProperties = fn (ReflectionClass $reflectionClass): array => array_filter(
-            array_map(
-                fn (ReflectionProperty $property): ReflectionProperty => $property,
-                $reflectionClass->getProperties(),
-            ),
-            fn (ReflectionProperty $property): bool => $property->getDeclaringClass()->getName() === $reflectionClass->getName(),
-        );
-
-        $propertiesFromTraits = [];
-        foreach ($reflectionClass->getTraits() as $trait) {
-            $propertiesFromTraits = array_merge($propertiesFromTraits, $getProperties($trait));
+        $get_properties = fn(ReflectionClass $reflection_class): array => array_filter(array_map(fn(ReflectionProperty $property): ReflectionProperty => $property, $reflection_class->get_properties()), fn(ReflectionProperty $property): bool => $property->get_declaring_class()->get_name() === $reflection_class->get_name());
+        $properties_from_traits = [];
+        foreach ($reflection_class->get_traits() as $trait) {
+            $properties_from_traits = array_merge($properties_from_traits, $get_properties($trait));
         }
-
-        $propertiesFromTraits = array_map(
-            fn (ReflectionProperty $property): string => $property->getName(),
-            $propertiesFromTraits,
-        );
-
-        return array_values(
-            array_filter(
-                $getProperties($reflectionClass),
-                fn (ReflectionProperty $property): bool => ! in_array($property->getName(), $propertiesFromTraits, true),
-            ),
-        );
+        $properties_from_traits = array_map(fn(ReflectionProperty $property): string => $property->get_name(), $properties_from_traits);
+        return array_values(array_filter($get_properties($reflection_class), fn(ReflectionProperty $property): bool => !in_array($property->get_name(), $properties_from_traits, true)));
     }
-
     /**
      * Get the methods from the given reflection class.
      *
@@ -254,31 +200,14 @@ final class Reflection
      * @param  ReflectionClass<object>  $reflectionClass
      * @return array<int, ReflectionMethod>
      */
-    public static function getMethodsFromReflectionClass(ReflectionClass $reflectionClass, int $filter = ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_PRIVATE): array
+    public static function get_methods_from_reflection_class(ReflectionClass $reflection_class, int $filter = ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_PRIVATE): array
     {
-        $getMethods = fn (ReflectionClass $reflectionClass): array => array_filter(
-            array_map(
-                fn (ReflectionMethod $method): ReflectionMethod => $method,
-                $reflectionClass->getMethods($filter),
-            ),
-            fn (ReflectionMethod $method): bool => $method->getDeclaringClass()->getName() === $reflectionClass->getName(),
-        );
-
-        $methodsFromTraits = [];
-        foreach ($reflectionClass->getTraits() as $trait) {
-            $methodsFromTraits = array_merge($methodsFromTraits, $getMethods($trait));
+        $get_methods = fn(ReflectionClass $reflection_class): array => array_filter(array_map(fn(ReflectionMethod $method): ReflectionMethod => $method, $reflection_class->get_methods($filter)), fn(ReflectionMethod $method): bool => $method->get_declaring_class()->get_name() === $reflection_class->get_name());
+        $methods_from_traits = [];
+        foreach ($reflection_class->get_traits() as $trait) {
+            $methods_from_traits = array_merge($methods_from_traits, $get_methods($trait));
         }
-
-        $methodsFromTraits = array_map(
-            fn (ReflectionMethod $method): string => $method->getName(),
-            $methodsFromTraits,
-        );
-
-        return array_values(
-            array_filter(
-                $getMethods($reflectionClass),
-                fn (ReflectionMethod $method): bool => ! in_array($method->getName(), $methodsFromTraits, true),
-            ),
-        );
+        $methods_from_traits = array_map(fn(ReflectionMethod $method): string => $method->get_name(), $methods_from_traits);
+        return array_values(array_filter($get_methods($reflection_class), fn(ReflectionMethod $method): bool => !in_array($method->get_name(), $methods_from_traits, true)));
     }
 }

@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\TestRunner\ExecutionFinished;
-use PHPUnit\Event\TestRunner\ExecutionFinishedSubscriber;
-
+use Php_Unit\Event\Test_Runner\Execution_Finished;
+use Php_Unit\Event\Test_Runner\Execution_Finished_Subscriber;
 /**
  * @internal
  */
-final class TestExecutionFinishedSubscriber extends Subscriber implements ExecutionFinishedSubscriber
+final class Test_Execution_Finished_Subscriber extends Subscriber implements Execution_Finished_Subscriber
 {
-    public function notify(ExecutionFinished $event): void
+    public function notify(Execution_Finished $event): void
     {
-        $this->logger()->testExecutionFinished($event);
+        $this->logger()->test_execution_finished($event);
     }
 }

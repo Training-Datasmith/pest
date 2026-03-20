@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Exceptions;
 
-use NunoMaduro\Collision\Contracts\RenderlessTrace;
+use Nuno_Maduro\Collision\Contracts\Renderless_Trace;
 use RuntimeException;
-
 /**
  * @internal
  */
-final class FatalException extends RuntimeException implements RenderlessTrace
+final class Fatal_Exception extends RuntimeException implements Renderless_Trace
 {
 }

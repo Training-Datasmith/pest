@@ -1,26 +1,22 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\AddsOutput;
-use Pest\Contracts\Plugins\HandlesArguments;
-use Pest\Exceptions\InvalidOption;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Pest\Contracts\Plugins\Adds_Output;
+use Pest\Contracts\Plugins\Handles_Arguments;
+use Pest\Exceptions\Invalid_Option;
+use Symfony\Component\Console\Input\Argv_Input;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
 use Symfony\Component\Process\Process;
-
 /**
  * @internal
  */
-final class Shard implements AddsOutput, HandlesArguments
+final class Shard implements Adds_Output, Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     private const string SHARD_OPTION = 'shard';
-
     /**
      * The shard index and total number of shards.
      *
@@ -32,146 +28,93 @@ final class Shard implements AddsOutput, HandlesArguments
      * }|null
      */
     private static ?array $shard = null;
-
     /**
      * Creates a new Plugin instance.
      */
-    public function __construct(
-        private readonly OutputInterface $output,
-    ) {
-
+    public function __construct(private readonly Output_Interface $output)
+    {
     }
-
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
-        if (! $this->hasArgument('--shard', $arguments)) {
+        if (!$this->has_argument('--shard', $arguments)) {
             return $arguments;
         }
-
         // @phpstan-ignore-next-line
-        $input = new ArgvInput($arguments);
-
-        ['index' => $index, 'total' => $total] = self::getShard($input);
-
-        $arguments = $this->popArgument("--shard=$index/$total", $this->popArgument('--shard', $this->popArgument(
-            "$index/$total",
-            $arguments,
-        )));
-
+        $input = new Argv_Input($arguments);
+        ['index' => $index, 'total' => $total] = self::get_shard($input);
+        $arguments = $this->pop_argument("--shard={$index}/{$total}", $this->pop_argument('--shard', $this->pop_argument("{$index}/{$total}", $arguments)));
         /** @phpstan-ignore-next-line */
-        $tests = $this->allTests($arguments);
-        $testsToRun = (array_chunk($tests, max(1, (int) ceil(count($tests) / $total))))[$index - 1] ?? [];
-
-        self::$shard = [
-            'index' => $index,
-            'total' => $total,
-            'testsRan' => count($testsToRun),
-            'testsCount' => count($tests),
-        ];
-
-        return [...$arguments, '--filter', $this->buildFilterArgument($testsToRun)];
+        $tests = $this->all_tests($arguments);
+        $tests_to_run = array_chunk($tests, max(1, (int) ceil(count($tests) / $total)))[$index - 1] ?? [];
+        self::$shard = ['index' => $index, 'total' => $total, 'testsRan' => count($tests_to_run), 'testsCount' => count($tests)];
+        return [...$arguments, '--filter', $this->build_filter_argument($tests_to_run)];
     }
-
     /**
      * Returns all tests that the test suite would run.
      *
      * @param  list<string>  $arguments
      * @return list<string>
      */
-    private function allTests(array $arguments): array
+    private function all_tests(array $arguments): array
     {
-        $output = (new Process([
-            'php',
-            ...$this->removeParallelArguments($arguments),
-            '--list-tests',
-        ]))->mustRun()->getOutput();
-
+        $output = (new Process(['php', ...$this->remove_parallel_arguments($arguments), '--list-tests']))->must_run()->get_output();
         preg_match_all('/ - (?:P\\\\)?(Tests\\\\[^:]+)::/', $output, $matches);
-
         return array_values(array_unique($matches[1]));
     }
-
     /**
      * @param  array<int, string>  $arguments
      * @return array<int, string>
      */
-    private function removeParallelArguments(array $arguments): array
+    private function remove_parallel_arguments(array $arguments): array
     {
-        return array_filter($arguments, fn (string $argument): bool => ! in_array($argument, ['--parallel', '-p'], strict: true));
+        return array_filter($arguments, fn(string $argument): bool => !in_array($argument, ['--parallel', '-p'], strict: true));
     }
-
     /**
      * Builds the filter argument for the given tests to run.
      */
-    private function buildFilterArgument(mixed $testsToRun): string
+    private function build_filter_argument(mixed $tests_to_run): string
     {
-        return addslashes(implode('|', $testsToRun));
+        return addslashes(implode('|', $tests_to_run));
     }
-
     /**
      * Adds output after the Test Suite execution.
      */
-    public function addOutput(int $exitCode): int
+    public function add_output(int $exit_code): int
     {
         if (self::$shard === null) {
-            return $exitCode;
+            return $exit_code;
         }
-
-        [
-            'index' => $index,
-            'total' => $total,
-            'testsRan' => $testsRan,
-            'testsCount' => $testsCount,
-        ] = self::$shard;
-
-        $this->output->writeln(sprintf(
-            '  <fg=gray>Shard:</>    <fg=default>%d of %d</> — %d file%s ran, out of %d.',
-            $index,
-            $total,
-            $testsRan,
-            $testsRan === 1 ? '' : 's',
-            $testsCount,
-        ));
-
-        return $exitCode;
+        ['index' => $index, 'total' => $total, 'testsRan' => $tests_ran, 'testsCount' => $tests_count] = self::$shard;
+        $this->output->writeln(sprintf('  <fg=gray>Shard:</>    <fg=default>%d of %d</> — %d file%s ran, out of %d.', $index, $total, $tests_ran, $tests_ran === 1 ? '' : 's', $tests_count));
+        return $exit_code;
     }
-
     /**
      * Returns the shard information.
      *
      * @return array{index: int, total: int}
      */
-    public static function getShard(InputInterface $input): array
+    public static function get_shard(Input_Interface $input): array
     {
-        if ($input->hasParameterOption('--'.self::SHARD_OPTION)) {
-            $shard = $input->getParameterOption('--'.self::SHARD_OPTION);
+        if ($input->has_parameter_option('--' . self::SHARD_OPTION)) {
+            $shard = $input->get_parameter_option('--' . self::SHARD_OPTION);
         } else {
             $shard = null;
         }
-
-        if (! is_string($shard) || ! preg_match('/^\d+\/\d+$/', $shard)) {
-            throw new InvalidOption('The [--shard] option must be in the format "index/total".');
+        if (!is_string($shard) || !preg_match('/^\d+\/\d+$/', $shard)) {
+            throw new Invalid_Option('The [--shard] option must be in the format "index/total".');
         }
-
         [$index, $total] = explode('/', $shard);
-
-        if (! is_numeric($index) || ! is_numeric($total)) {
-            throw new InvalidOption('The [--shard] option must be in the format "index/total".');
+        if (!is_numeric($index) || !is_numeric($total)) {
+            throw new Invalid_Option('The [--shard] option must be in the format "index/total".');
         }
-
         if ($index <= 0 || $total <= 0 || $index > $total) {
-            throw new InvalidOption('The [--shard] option index must be a non-negative integer less than the total number of shards.');
+            throw new Invalid_Option('The [--shard] option index must be a non-negative integer less than the total number of shards.');
         }
-
         $index = (int) $index;
         $total = (int) $total;
-
-        return [
-            'index' => $index,
-            'total' => $total,
-        ];
+        return ['index' => $index, 'total' => $total];
     }
 }

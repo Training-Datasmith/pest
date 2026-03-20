@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
 /**
  * @internal
  */
-final class HigherOrderMessageCollection
+final class Higher_Order_Message_Collection
 {
     /**
      * @var array<int, HigherOrderMessage>
      */
     private array $messages = [];
-
     /**
      * Adds a new higher order message to the collection.
      *
@@ -21,19 +19,17 @@ final class HigherOrderMessageCollection
      */
     public function add(string $filename, int $line, string $name, ?array $arguments): void
     {
-        $this->messages[] = new HigherOrderMessage($filename, $line, $name, $arguments);
+        $this->messages[] = new Higher_Order_Message($filename, $line, $name, $arguments);
     }
-
     /**
      * Adds a new higher order message to the collection if the callable condition is does not return false.
      *
      * @param  array<int, mixed>|null  $arguments
      */
-    public function addWhen(callable $condition, string $filename, int $line, string $name, ?array $arguments): void
+    public function add_when(callable $condition, string $filename, int $line, string $name, ?array $arguments): void
     {
-        $this->messages[] = (new HigherOrderMessage($filename, $line, $name, $arguments))->when($condition);
+        $this->messages[] = (new Higher_Order_Message($filename, $line, $name, $arguments))->when($condition);
     }
-
     /**
      * Proxy all the messages starting from the target.
      */
@@ -43,7 +39,6 @@ final class HigherOrderMessageCollection
             $target = $message->call($target) ?? $target;
         }
     }
-
     /**
      * Proxy all the messages to the target.
      */
@@ -53,7 +48,6 @@ final class HigherOrderMessageCollection
             $message->call($target);
         }
     }
-
     /**
      * Count the number of messages with the given name.
      *
@@ -61,10 +55,6 @@ final class HigherOrderMessageCollection
      */
     public function count(string $name): int
     {
-        return array_reduce(
-            $this->messages,
-            static fn (int $total, HigherOrderMessage $message): int => $total + (int) ($name === $message->name),
-            0,
-        );
+        return array_reduce($this->messages, static fn(int $total, Higher_Order_Message $message): int => $total + (int) ($name === $message->name), 0);
     }
 }

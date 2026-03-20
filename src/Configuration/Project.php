@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Configuration;
 
 /**
@@ -15,34 +14,29 @@ final class Project
      * @internal
      */
     public string $assignees = '';
-
     /**
      * The issues link.
      *
      * @internal
      */
     public string $issues = '';
-
     /**
      * The PRs link.
      *
      * @internal
      */
     public string $prs = '';
-
     /**
      * The singleton instance.
      */
     private static ?self $instance = null;
-
     /**
      * Creates a new instance of the project.
      */
-    public static function getInstance(): self
+    public static function get_instance(): self
     {
         return self::$instance ??= new self();
     }
-
     /**
      * Sets the test project to GitHub.
      */
@@ -50,12 +44,9 @@ final class Project
     {
         $this->issues = "https://github.com/{$project}/issues/%s";
         $this->prs = "https://github.com/{$project}/pull/%s";
-
         $this->assignees = 'https://github.com/%s';
-
         return $this;
     }
-
     /**
      * Sets the test project to GitLab.
      */
@@ -63,12 +54,9 @@ final class Project
     {
         $this->issues = "https://gitlab.com/{$project}/issues/%s";
         $this->prs = "https://gitlab.com/{$project}/merge_requests/%s";
-
         $this->assignees = 'https://gitlab.com/%s';
-
         return $this;
     }
-
     /**
      * Sets the test project to Bitbucket.
      */
@@ -76,24 +64,18 @@ final class Project
     {
         $this->issues = "https://bitbucket.org/{$project}/issues/%s";
         $this->prs = "https://bitbucket.org/{$project}/pull-requests/%s";
-
         $this->assignees = 'https://bitbucket.org/%s';
-
         return $this;
     }
-
     /**
      * Sets the test project to Jira.
      */
     public function jira(string $namespace, string $project): self
     {
         $this->issues = "https://{$namespace}.atlassian.net/browse/{$project}-%s";
-
         $this->assignees = "https://{$namespace}.atlassian.net/secure/ViewProfile.jspa?name=%s";
-
         return $this;
     }
-
     /**
      * Sets the test project to custom.
      */
@@ -101,9 +83,7 @@ final class Project
     {
         $this->issues = $issues;
         $this->prs = $prs;
-
         $this->assignees = $assignees;
-
         return $this;
     }
 }

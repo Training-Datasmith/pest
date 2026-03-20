@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\Test\ConsideredRisky;
-use PHPUnit\Event\Test\ConsideredRiskySubscriber;
-
+use Php_Unit\Event\Test\Considered_Risky;
+use Php_Unit\Event\Test\Considered_Risky_Subscriber;
 /**
  * @internal
  */
-final class TestConsideredRiskySubscriber extends Subscriber implements ConsideredRiskySubscriber
+final class Test_Considered_Risky_Subscriber extends Subscriber implements Considered_Risky_Subscriber
 {
-    public function notify(ConsideredRisky $event): void
+    public function notify(Considered_Risky $event): void
     {
-        $this->logger()->testConsideredRisky($event);
+        $this->logger()->test_considered_risky($event);
     }
 }

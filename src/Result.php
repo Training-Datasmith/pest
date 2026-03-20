@@ -1,43 +1,37 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest;
 
-use PHPUnit\TestRunner\TestResult\TestResult;
-use PHPUnit\TextUI\Configuration\Configuration;
-use PHPUnit\TextUI\ShellExitCodeCalculator;
-
+use Php_Unit\Test_Runner\Test_Result\Test_Result;
+use Php_Unit\Text_Ui\Configuration\Configuration;
+use Php_Unit\Text_Ui\Shell_Exit_Code_Calculator;
 /**
  * @internal
  */
 final class Result
 {
     private const int SUCCESS_EXIT = 0;
-
     /**
      * If the exit code is different from 0.
      */
-    public static function failed(Configuration $configuration, TestResult $result): bool
+    public static function failed(Configuration $configuration, Test_Result $result): bool
     {
-        return ! self::ok($configuration, $result);
+        return !self::ok($configuration, $result);
     }
-
     /**
      * If the exit code is exactly 0.
      */
-    public static function ok(Configuration $configuration, TestResult $result): bool
+    public static function ok(Configuration $configuration, Test_Result $result): bool
     {
-        return self::exitCode($configuration, $result) === self::SUCCESS_EXIT;
+        return self::exit_code($configuration, $result) === self::SUCCESS_EXIT;
     }
-
     /**
      * Get the test execution's exit code.
      */
-    public static function exitCode(Configuration $configuration, TestResult $result): int
+    public static function exit_code(Configuration $configuration, Test_Result $result): int
     {
-        $shell = new ShellExitCodeCalculator();
-
+        $shell = new Shell_Exit_Code_Calculator();
         return $shell->calculate($configuration, $result);
     }
 }

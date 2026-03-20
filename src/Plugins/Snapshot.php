@@ -1,35 +1,29 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
-use Pest\Exceptions\InvalidOption;
-use Pest\TestSuite;
-
+use Pest\Contracts\Plugins\Handles_Arguments;
+use Pest\Exceptions\Invalid_Option;
+use Pest\Test_Suite;
 /**
  * @internal
  */
-final class Snapshot implements HandlesArguments
+final class Snapshot implements Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
-        if (! $this->hasArgument('--update-snapshots', $arguments)) {
+        if (!$this->has_argument('--update-snapshots', $arguments)) {
             return $arguments;
         }
-
-        if ($this->hasArgument('--parallel', $arguments)) {
-            throw new InvalidOption('The [--update-snapshots] option is not supported when running in parallel.');
+        if ($this->has_argument('--parallel', $arguments)) {
+            throw new Invalid_Option('The [--update-snapshots] option is not supported when running in parallel.');
         }
-
-        TestSuite::getInstance()->snapshots->flush();
-
-        return $this->popArgument('--update-snapshots', $arguments);
+        Test_Suite::get_instance()->snapshots->flush();
+        return $this->pop_argument('--update-snapshots', $arguments);
     }
 }

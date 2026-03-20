@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\Test\Prepared;
-use PHPUnit\Event\Test\PreparedSubscriber;
-
+use Php_Unit\Event\Test\Prepared;
+use Php_Unit\Event\Test\Prepared_Subscriber;
 /**
  * @internal
  */
-final class TestPreparedSubscriber extends Subscriber implements PreparedSubscriber
+final class Test_Prepared_Subscriber extends Subscriber implements Prepared_Subscriber
 {
     public function notify(Prepared $event): void
     {
-        $this->logger()->testPrepared($event);
+        $this->logger()->test_prepared($event);
     }
 }

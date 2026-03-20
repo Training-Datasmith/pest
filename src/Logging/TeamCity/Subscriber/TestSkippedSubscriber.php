@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\Test\Skipped;
-use PHPUnit\Event\Test\SkippedSubscriber;
-
+use Php_Unit\Event\Test\Skipped;
+use Php_Unit\Event\Test\Skipped_Subscriber;
 /**
  * @internal
  */
-final class TestSkippedSubscriber extends Subscriber implements SkippedSubscriber
+final class Test_Skipped_Subscriber extends Subscriber implements Skipped_Subscriber
 {
     public function notify(Skipped $event): void
     {
-        $this->logger()->testSkipped($event);
+        $this->logger()->test_skipped($event);
     }
 }

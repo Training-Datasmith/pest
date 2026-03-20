@@ -1,17 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Output\Output_Interface;
 use function Termwind\render;
-
-use function Termwind\renderUsing;
-
+use function Termwind\Render_Using;
 use Termwind\Termwind;
-
 /**
  * @internal
  */
@@ -20,16 +15,14 @@ final class View
     /**
      * The implementation of the output.
      */
-    private static OutputInterface $output;
-
+    private static Output_Interface $output;
     /**
      * Renders views using the given Output instance.
      */
-    public static function renderUsing(OutputInterface $output): void
+    public static function render_using(Output_Interface $output): void
     {
         self::$output = $output;
     }
-
     /**
      * Renders the given view.
      *
@@ -38,18 +31,14 @@ final class View
     public static function render(string $path, array $data = []): void
     {
         $contents = self::compile($path, $data);
-
-        $existing = Termwind::getRenderer();
-
-        renderUsing(self::$output);
-
+        $existing = Termwind::get_renderer();
+        render_using(self::$output);
         try {
             render($contents);
         } finally {
-            renderUsing($existing);
+            render_using($existing);
         }
     }
-
     /**
      * Compiles the given view.
      *
@@ -58,17 +47,11 @@ final class View
     private static function compile(string $path, array $data): string
     {
         extract($data);
-
         ob_start();
-
         $path = str_replace('.', '/', $path);
-
         include sprintf('%s/../../resources/views/%s.php', __DIR__, $path);
-
         $contents = ob_get_contents();
-
         ob_clean();
-
         return (string) $contents;
     }
 }

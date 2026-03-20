@@ -1,28 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Plugins;
 
-use Pest\Contracts\Plugins\HandlesArguments;
-use Pest\Exceptions\InvalidOption;
-
+use Pest\Contracts\Plugins\Handles_Arguments;
+use Pest\Exceptions\Invalid_Option;
 /**
  * @internal
  */
-final class ProcessIsolation implements HandlesArguments
+final class Process_Isolation implements Handles_Arguments
 {
-    use Concerns\HandleArguments;
-
+    use Concerns\Handle_Arguments;
     /**
      * {@inheritDoc}
      */
-    public function handleArguments(array $arguments): array
+    public function handle_arguments(array $arguments): array
     {
-        if ($this->hasArgument('--process-isolation', $arguments)) {
-            throw new InvalidOption('The [--process-isolation] option is not supported.');
+        if ($this->has_argument('--process-isolation', $arguments)) {
+            throw new Invalid_Option('The [--process-isolation] option is not supported.');
         }
-
         return $arguments;
     }
 }

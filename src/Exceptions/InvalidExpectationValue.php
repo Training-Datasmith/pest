@@ -1,15 +1,13 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Exceptions;
 
 use InvalidArgumentException;
-
 /**
  * @internal
  */
-final class InvalidExpectationValue extends InvalidArgumentException
+final class Invalid_Expectation_Value extends InvalidArgumentException
 {
     /**
      * @throws self

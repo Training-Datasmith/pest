@@ -1,37 +1,30 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Bootstrappers;
 
 use Pest\Contracts\Bootstrapper;
-use Pest\KernelDump;
+use Pest\Kernel_Dump;
 use Pest\Support\Container;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Output\Output_Interface;
 /**
  * @internal
  */
-final readonly class BootKernelDump implements Bootstrapper
+final readonly class Boot_Kernel_Dump implements Bootstrapper
 {
     /**
      * Creates a new Boot Kernel Dump instance.
      */
-    public function __construct(
-        private OutputInterface $output,
-    ) {
+    public function __construct(private Output_Interface $output)
+    {
         // ...
     }
-
     /**
      * Boots the kernel dump.
      */
     public function boot(): void
     {
-        Container::getInstance()->add(KernelDump::class, $kernelDump = new KernelDump(
-            $this->output,
-        ));
-
-        $kernelDump->enable();
+        Container::get_instance()->add(Kernel_Dump::class, $kernel_dump = new Kernel_Dump($this->output));
+        $kernel_dump->enable();
     }
 }

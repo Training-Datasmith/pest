@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Concerns;
 
 use Closure;
-
 /**
  * @internal
  *
@@ -19,7 +17,6 @@ trait Extendable
      * @var array<string, Closure>
      */
     private static array $extends = [];
-
     /**
      * Register a new extend.
      *
@@ -29,11 +26,10 @@ trait Extendable
     {
         static::$extends[$name] = $extend;
     }
-
     /**
      * Checks if given extend name is registered.
      */
-    public static function hasExtend(string $name): bool
+    public static function has_extend(string $name): bool
     {
         return array_key_exists($name, static::$extends);
     }

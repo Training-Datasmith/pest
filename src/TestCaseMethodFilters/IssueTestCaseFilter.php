@@ -1,26 +1,22 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Test_Case_Method_Filters;
 
-namespace Pest\TestCaseMethodFilters;
-
-use Pest\Contracts\TestCaseMethodFilter;
-use Pest\Factories\TestCaseMethodFactory;
-
-final readonly class IssueTestCaseFilter implements TestCaseMethodFilter
+use Pest\Contracts\Test_Case_Method_Filter;
+use Pest\Factories\Test_Case_Method_Factory;
+final readonly class Issue_Test_Case_Filter implements Test_Case_Method_Filter
 {
     /**
      * Create a new filter instance.
      */
     public function __construct(private int $number)
     {
-
     }
-
     /**
      * Filter the test case methods.
      */
-    public function accept(TestCaseMethodFactory $factory): bool
+    public function accept(Test_Case_Method_Factory $factory): bool
     {
         return in_array($this->number, $factory->issues, true);
     }

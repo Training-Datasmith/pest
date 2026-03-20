@@ -1,58 +1,48 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Repositories;
 
 use Closure;
 use Mockery;
-use Pest\PendingCalls\AfterEachCall;
-use Pest\Support\ChainableClosure;
-use Pest\Support\NullClosure;
-
+use Pest\Pending_Calls\After_Each_Call;
+use Pest\Support\Chainable_Closure;
+use Pest\Support\Null_Closure;
 /**
  * @internal
  */
-final class AfterEachRepository
+final class After_Each_Repository
 {
     /**
      * @var array<string, Closure>
      */
     private array $state = [];
-
     /**
      * Sets a after each closure.
      */
-    public function set(string $filename, AfterEachCall $afterEachCall, Closure $afterEachTestCase): void
+    public function set(string $filename, After_Each_Call $after_each_call, Closure $after_each_test_case): void
     {
         if (array_key_exists($filename, $this->state)) {
-            $fromAfterEachTestCase = $this->state[$filename];
-
-            $afterEachTestCase = ChainableClosure::bound($fromAfterEachTestCase, $afterEachTestCase)
-                ->bindTo($afterEachCall, $afterEachCall::class);
+            $from_after_each_test_case = $this->state[$filename];
+            $after_each_test_case = Chainable_Closure::bound($from_after_each_test_case, $after_each_test_case)->bind_to($after_each_call, $after_each_call::class);
         }
-
-        assert($afterEachTestCase instanceof Closure);
-
-        $this->state[$filename] = $afterEachTestCase;
+        assert($after_each_test_case instanceof Closure);
+        $this->state[$filename] = $after_each_test_case;
     }
-
     /**
      * Gets an after each closure by the given filename.
      */
     public function get(string $filename): Closure
     {
-        $afterEach = $this->state[$filename] ?? NullClosure::create();
-
-        return ChainableClosure::bound(function (): void {
+        $after_each = $this->state[$filename] ?? Null_Closure::create();
+        return Chainable_Closure::bound(function (): void {
             if (class_exists(Mockery::class)) {
-                if ($container = Mockery::getContainer()) {
+                if ($container = Mockery::get_container()) {
                     /* @phpstan-ignore-next-line */
-                    $this->addToAssertionCount($container->mockery_getExpectationCount());
+                    $this->add_to_assertion_count($container->mockery_get_expectation_count());
                 }
-
                 Mockery::close();
             }
-        }, $afterEach);
+        }, $after_each);
     }
 }

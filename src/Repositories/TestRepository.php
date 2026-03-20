@@ -1,64 +1,56 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Repositories;
 
 use Closure;
-use Pest\Contracts\TestCaseFilter;
-use Pest\Contracts\TestCaseMethodFilter;
-use Pest\Exceptions\TestCaseAlreadyInUse;
-use Pest\Exceptions\TestCaseClassOrTraitNotFound;
+use Pest\Contracts\Test_Case_Filter;
+use Pest\Contracts\Test_Case_Method_Filter;
+use Pest\Exceptions\Test_Case_Already_In_Use;
+use Pest\Exceptions\Test_Case_Class_Or_Trait_Not_Found;
 use Pest\Factories\Attribute;
-use Pest\Factories\TestCaseFactory;
-use Pest\Factories\TestCaseMethodFactory;
+use Pest\Factories\Test_Case_Factory;
+use Pest\Factories\Test_Case_Method_Factory;
 use Pest\Support\Str;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
-
+use Php_Unit\Framework\Attributes\Group;
+use Php_Unit\Framework\Test_Case;
 /**
  * @internal
  */
-final class TestRepository
+final class Test_Repository
 {
     /**
      * @var array<string, TestCaseFactory>
      */
-    private array $testCases = [];
-
+    private array $test_cases = [];
     /**
      * @var array<string, array{0: array<int, string>, 1: array<int, string>, 2: array<int, array<int, string|Closure>>}>
      */
     private array $uses = [];
-
     /**
      * @var array<int, TestCaseFilter>
      */
-    private array $testCaseFilters = [];
-
+    private array $test_case_filters = [];
     /**
      * @var array<int, TestCaseMethodFilter>
      */
-    private array $testCaseMethodFilters = [];
-
+    private array $test_case_method_filters = [];
     /**
      * Counts the number of test cases.
      */
     public function count(): int
     {
-        return count($this->testCases);
+        return count($this->test_cases);
     }
-
     /**
      * Returns the filename of each test that should be executed in the suite.
      *
      * @return array<int, string>
      */
-    public function getFilenames(): array
+    public function get_filenames(): array
     {
-        return array_values(array_map(static fn (TestCaseFactory $factory): string => $factory->filename, $this->testCases));
+        return array_values(array_map(static fn(Test_Case_Factory $factory): string => $factory->filename, $this->test_cases));
     }
-
     /**
      * Uses the given `$testCaseClass` on the given `$paths`.
      *
@@ -67,146 +59,117 @@ final class TestRepository
      * @param  array<int, string>  $paths
      * @param  array<int, Closure>  $hooks
      */
-    public function use(array $classOrTraits, array $groups, array $paths, array $hooks): void
+    public function use(array $class_or_traits, array $groups, array $paths, array $hooks): void
     {
-        foreach ($classOrTraits as $classOrTrait) {
-            if (class_exists($classOrTrait)) {
+        foreach ($class_or_traits as $class_or_trait) {
+            if (class_exists($class_or_trait)) {
                 continue;
             }
-            if (trait_exists($classOrTrait)) {
+            if (trait_exists($class_or_trait)) {
                 continue;
             }
-            throw new TestCaseClassOrTraitNotFound($classOrTrait);
+            throw new Test_Case_Class_Or_Trait_Not_Found($class_or_trait);
         }
-
-        $hooks = array_map(fn (Closure $hook): array => [$hook], $hooks);
-
+        $hooks = array_map(fn(Closure $hook): array => [$hook], $hooks);
         foreach ($paths as $path) {
             if (array_key_exists($path, $this->uses)) {
-                $this->uses[$path] = [
-                    [...$this->uses[$path][0], ...$classOrTraits],
-                    [...$this->uses[$path][1], ...$groups],
-                    array_map(
-                        fn (int $index): array => [...$this->uses[$path][2][$index] ?? [], ...($hooks[$index] ?? [])],
-                        range(0, 3),
-                    ),
-                ];
+                $this->uses[$path] = [[...$this->uses[$path][0], ...$class_or_traits], [...$this->uses[$path][1], ...$groups], array_map(fn(int $index): array => [...$this->uses[$path][2][$index] ?? [], ...$hooks[$index] ?? []], range(0, 3))];
             } else {
-                $this->uses[$path] = [$classOrTraits, $groups, $hooks];
+                $this->uses[$path] = [$class_or_traits, $groups, $hooks];
             }
         }
     }
-
     /**
      * Filters the test cases using the given filter.
      */
-    public function addTestCaseFilter(TestCaseFilter $filter): void
+    public function add_test_case_filter(Test_Case_Filter $filter): void
     {
-        $this->testCaseFilters[] = $filter;
+        $this->test_case_filters[] = $filter;
     }
-
     /**
      * Filters the test cases using the given filter.
      */
-    public function addTestCaseMethodFilter(TestCaseMethodFilter $filter): void
+    public function add_test_case_method_filter(Test_Case_Method_Filter $filter): void
     {
-        $this->testCaseMethodFilters[] = $filter;
+        $this->test_case_method_filters[] = $filter;
     }
-
     /**
      * Gets the test case factory from the given filename.
      */
-    public function get(string $filename): ?TestCaseFactory
+    public function get(string $filename): ?Test_Case_Factory
     {
-        return $this->testCases[$filename] ?? null;
+        return $this->test_cases[$filename] ?? null;
     }
-
     /**
      * Sets a new test case method.
      */
-    public function set(TestCaseMethodFactory $method): void
+    public function set(Test_Case_Method_Factory $method): void
     {
-        foreach ($this->testCaseFilters as $filter) {
-            if (! $filter->accept($method->filename)) {
+        foreach ($this->test_case_filters as $filter) {
+            if (!$filter->accept($method->filename)) {
                 return;
             }
         }
-
-        foreach ($this->testCaseMethodFilters as $filter) {
-            if (! $filter->accept($method)) {
+        foreach ($this->test_case_method_filters as $filter) {
+            if (!$filter->accept($method)) {
                 return;
             }
         }
-
-        if (! array_key_exists($method->filename, $this->testCases)) {
-            $this->testCases[$method->filename] = new TestCaseFactory($method->filename);
+        if (!array_key_exists($method->filename, $this->test_cases)) {
+            $this->test_cases[$method->filename] = new Test_Case_Factory($method->filename);
         }
-
-        $this->testCases[$method->filename]->addMethod($method);
+        $this->test_cases[$method->filename]->add_method($method);
     }
-
     /**
      * Makes a Test Case from the given filename, if exists.
      */
-    public function makeIfNeeded(string $filename): void
+    public function make_if_needed(string $filename): void
     {
-        if (! array_key_exists($filename, $this->testCases)) {
+        if (!array_key_exists($filename, $this->test_cases)) {
             return;
         }
-
-        foreach ($this->testCaseFilters as $filter) {
-            if (! $filter->accept($filename)) {
+        foreach ($this->test_case_filters as $filter) {
+            if (!$filter->accept($filename)) {
                 return;
             }
         }
-
-        $this->make($this->testCases[$filename]);
+        $this->make($this->test_cases[$filename]);
     }
-
     /**
      * Makes a Test Case using the given factory.
      */
-    private function make(TestCaseFactory $testCase): void
+    private function make(Test_Case_Factory $test_case): void
     {
-        $startsWith = static fn (string $target, string $directory): bool => Str::startsWith($target, $directory.DIRECTORY_SEPARATOR);
-
+        $starts_with = static fn(string $target, string $directory): bool => Str::starts_with($target, $directory . DIRECTORY_SEPARATOR);
         foreach ($this->uses as $path => $uses) {
-            [$classOrTraits, $groups, $hooks] = $uses;
-
-            if ((! is_dir($path) && $testCase->filename === $path) || (is_dir($path) && $startsWith($testCase->filename, $path))) {
-                foreach ($classOrTraits as $class) {
+            [$class_or_traits, $groups, $hooks] = $uses;
+            if (!is_dir($path) && $test_case->filename === $path || is_dir($path) && $starts_with($test_case->filename, $path)) {
+                foreach ($class_or_traits as $class) {
                     /** @var string $class */
                     if (class_exists($class)) {
-                        if ($testCase->class !== TestCase::class) {
-                            throw new TestCaseAlreadyInUse($testCase->class, $class, $testCase->filename);
+                        if ($test_case->class !== Test_Case::class) {
+                            throw new Test_Case_Already_In_Use($test_case->class, $class, $test_case->filename);
                         }
-                        $testCase->class = $class;
+                        $test_case->class = $class;
                     } elseif (trait_exists($class)) {
-                        $testCase->traits[] = $class;
+                        $test_case->traits[] = $class;
                     }
                 }
-
-                foreach ($testCase->methods as $method) {
+                foreach ($test_case->methods as $method) {
                     foreach ($groups as $group) {
-                        $method->attributes[] = new Attribute(
-                            Group::class,
-                            [$group],
-                        );
+                        $method->attributes[] = new Attribute(Group::class, [$group]);
                     }
                 }
-
-                foreach ($testCase->methods as $method) {
+                foreach ($test_case->methods as $method) {
                     $method->groups = [...$groups, ...$method->groups];
                 }
-
                 foreach (['__addBeforeAll', '__addBeforeEach', '__addAfterEach', '__addAfterAll'] as $index => $name) {
                     foreach ($hooks[$index] ?? [null] as $hook) {
-                        $testCase->factoryProxies->add($testCase->filename, 0, $name, [$hook]);
+                        $test_case->factory_proxies->add($test_case->filename, 0, $name, [$hook]);
                     }
                 }
             }
         }
-
-        $testCase->make();
+        $test_case->make();
     }
 }

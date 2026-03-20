@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
+namespace Pest\Logging\Team_City\Subscriber;
 
-namespace Pest\Logging\TeamCity\Subscriber;
-
-use PHPUnit\Event\Test\Errored;
-use PHPUnit\Event\Test\ErroredSubscriber;
-
+use Php_Unit\Event\Test\Errored;
+use Php_Unit\Event\Test\Errored_Subscriber;
 /**
  * @internal
  */
-final class TestErroredSubscriber extends Subscriber implements ErroredSubscriber
+final class Test_Errored_Subscriber extends Subscriber implements Errored_Subscriber
 {
     public function notify(Errored $event): void
     {
-        $this->logger()->testErrored($event);
+        $this->logger()->test_errored($event);
     }
 }

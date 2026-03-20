@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Concerns;
 
 use Closure;
-
 /**
  * @internal
  */
@@ -17,14 +15,12 @@ trait Pipeable
      * @var array<string, array<Closure(Closure, mixed ...$arguments): void>>
      */
     private static array $pipes = [];
-
     /**
      * The list of interceptors.
      *
      * @var array<string, array<Closure(Closure, mixed ...$arguments): void>>
      */
     private static array $interceptors = [];
-
     /**
      * Register a pipe to be applied before an expectation is checked.
      */
@@ -32,7 +28,6 @@ trait Pipeable
     {
         self::$pipes[$name][] = $pipe;
     }
-
     /**
      * Register an interceptor that should replace an existing expectation.
      *
@@ -41,24 +36,19 @@ trait Pipeable
     public function intercept(string $name, string|Closure $filter, Closure $handler): void
     {
         if (is_string($filter)) {
-            $filter = fn ($value): bool => $value instanceof $filter;
+            $filter = fn($value): bool => $value instanceof $filter;
         }
-
         self::$interceptors[$name][] = $handler;
-
         $this->pipe($name, function ($next, ...$arguments) use ($handler, $filter): void {
             /* @phpstan-ignore-next-line */
             if ($filter($this->value, ...$arguments)) {
                 // @phpstan-ignore-next-line
-                $handler->bindTo($this, $this::class)(...$arguments);
-
+                $handler->bind_to($this, $this::class)(...$arguments);
                 return;
             }
-
             $next();
         });
     }
-
     /**
      * Get the list of pipes by the given name.
      *
@@ -66,6 +56,6 @@ trait Pipeable
      */
     private function pipes(string $name, object $context, string $scope): array
     {
-        return array_map(fn (Closure $pipe): Closure => $pipe->bindTo($context, $scope), self::$pipes[$name] ?? []);
+        return array_map(fn(Closure $pipe): Closure => $pipe->bind_to($context, $scope), self::$pipes[$name] ?? []);
     }
 }

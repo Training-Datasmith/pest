@@ -1,22 +1,20 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Pest\Support;
 
 use Closure;
-
 /**
  * @internal
  */
-final class NullClosure
+final class Null_Closure
 {
     /**
      * Creates a nullable closure.
      */
     public static function create(): Closure
     {
-        return Closure::fromCallable(function (): void {
+        return Closure::from_callable(function (): void {
         });
     }
 }
